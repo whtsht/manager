@@ -1,0 +1,19 @@
+services:
+  app:
+    container_name: app-server-container
+    hostname: app-server
+    build:
+      context: ..
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5000:5000"
+    restart: always
+    volumes:
+      - ../:/app:cached
+    tty: true
+    networks:
+      - scheduler
+
+networks:
+  scheduler:
+    external: true

@@ -1,0 +1,15 @@
+{
+    "name": "typescript remote development",
+    "dockerComposeFile": "compose.yml",
+    "service": "app",
+    "workspaceFolder": "/app",
+    "remoteUser": "node",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "EditorConfig.EditorConfig",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    }
+}

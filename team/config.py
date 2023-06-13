@@ -20,7 +20,7 @@ dependency: dict[str, set[str]] = {
     "15": set({}),
     "16": set({}),
     # Component 3
-    "17": {"18", "19"},
+    "17": {"18", "19", "14"},
     "18": set({}),
     "19": set({}),
     # Component 4

@@ -2,7 +2,7 @@ name: Gantt Charts and Appointment Management Sheets Generator
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
     paths:
       - team/*
       - .github/workflows/**

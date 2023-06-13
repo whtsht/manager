@@ -36,6 +36,6 @@ jobs:
       run: |
         git config user.name team-docs-gen[bot]
         git config user.email team-docs-gen[bot]@users.noreply.github.com
-        git add . || true
+        git add gantt.md limit.md || true
         git commit -m "generated" || true
         git push || true

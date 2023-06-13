@@ -43,7 +43,7 @@ ENV TZ Asia/Tokyo
 ENV TERM xterm
 ENV PYTHONPATH $PYTHONPATH:/app/src
 ENV PATH $PATH:/home/vscode/.local/bin
-# ENV FLASK_APP 'src.server:create_dev_app()'
+ENV FLASK_APP 'src.server:create_dev_app()'
 
 
 RUN pip install --upgrade pip

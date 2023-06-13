@@ -24,6 +24,11 @@ async function getPlanList(lineID: string): Promise<[Plan] | null> {
             }),
         });
 
+        // 有効な値が返ってきたか確認
+        if (!response.ok || response.status != 200) {
+            return null;
+        }
+
         return response.json();
     } catch (_) {
         return null;

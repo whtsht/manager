@@ -1,14 +1,11 @@
-# FROM rust:latest
-#
-# WORKDIR /app
-#
-# ADD ./lib/sas /app
-#
-# RUN apt -y update \
-#     && apt -y install  libmecab-dev
-#
-# RUN cargo build --release --bin=cli
-#
+FROM rust:latest
+
+WORKDIR /app
+
+ADD ./lib/analyzer /app
+
+RUN cargo build --release
+
 
 FROM python:3.11
 
@@ -34,7 +31,7 @@ RUN curl https://clrd.ninjal.ac.jp/unidic_archive/2302/unidic-cwj-202302.zip --o
     && mv unidic /var \
     && rm -f unidic.zip
 
-# COPY --from=0 /app/target/release/cli /bin/sas
+COPY --from=0 /app/target/release/analyzer /bin/analyzer
 
 ENV LANG ja_JP.UTF-8
 ENV LANGUAGE ja_JP:ja

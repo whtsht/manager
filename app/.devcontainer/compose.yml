@@ -3,8 +3,8 @@ services:
     container_name: app-server-container
     hostname: app-server
     build:
-      context: ..
-      dockerfile: Dockerfile.dev
+      context: ../..
+      dockerfile: app/Dockerfile.dev
     ports:
       - "5000:5000"
     restart: always

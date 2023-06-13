@@ -1,0 +1,41 @@
+name: Gantt Charts and Appointment Management Sheets Generator
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - team/*
+      - .github/workflows/**
+      
+permissions:
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
+  issues: write
+  packages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Run gen_gantt.py
+      working-directory: team
+      run: python3 gen_gantt.py
+    - name: Push to github
+      run: |
+        git config user.name team-docs-gen[bot]
+        git config user.email team-docs-gen[bot]@users.noreply.github.com
+        git add . || true
+        git commit -m "generated" || true
+        git push || true

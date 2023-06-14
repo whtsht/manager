@@ -5,7 +5,6 @@
 use crate::basic::{char, one_of};
 use nom::{
     branch::alt,
-    bytes::complete::take_while,
     combinator::map,
     multi::{many0, many1},
     sequence::tuple,
@@ -133,20 +132,19 @@ pub fn complex_kanzi_digits(input: &str) -> IResult<&str, u32> {
 ///
 /// 残りの文字列と解析した数値を返す
 pub fn numeric_digits(input: &str) -> IResult<&str, u32> {
-    let ascii = one_of("123456789");
-    let upper = one_of("１２３４５６７８９");
+    let ascii = one_of("1234567890");
+    let upper = one_of("１２３４５６７８９０");
 
     map(
-        tuple((
-            take_while(|c| c == '0' || c == '０'),
-            many1(alt((ascii, map(upper, upper_to_digit)))),
-        )),
-        |(_, v)| {
-            if v.len() == 0 {
-                0
-            } else {
-                v.into_iter().collect::<String>().parse().unwrap()
-            }
+        many1(alt((ascii, map(upper, upper_to_digit)))),
+        |v| match &v[..] {
+            ['0'] => 0,
+            v => v
+                .into_iter()
+                .filter(|&&c| c != '0')
+                .collect::<String>()
+                .parse()
+                .unwrap(),
         },
     )(input)
 }
@@ -178,6 +176,7 @@ mod tests {
         // アラビア数字
         assert_eq!(digits("43892は"), Ok(("は", 43892)));
         assert_eq!(digits("0293"), Ok(("", 293)));
+        assert_eq!(digits("0"), Ok(("", 0)));
     }
 
     #[test]

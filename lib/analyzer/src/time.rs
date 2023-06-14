@@ -54,26 +54,26 @@ fn minute(input: &str) -> IResult<&str, u8> {
 ///
 /// フォーマット
 ///
-/// - XX:XX
-/// - X時X分
-/// - X時
+/// - <hour><colon><minute>
+/// - <hour>時<minute>分
+/// - <hour>時
 ///
-/// * `input`  - 先頭に数字を含む文字列
+/// * `input`  - 先頭に時間を含む文字列
 ///
 /// 残りの文字列と解析した時間情報を返す
 pub fn time_parser(input: &str) -> IResult<&str, Time> {
     alt((
         alt((
-            // X:XX
+            // <hour><colon><minute>
             map(tuple((hour, colon, minute)), |(hour, _, minute)| {
                 Time::new(Some(hour), Some(minute))
             }),
-            // X時X分
+            // <hour>時<minute>分
             map(
                 tuple((hour, char('時'), minute, char('分'))),
                 |(hour, _, minute, _)| Time::new(Some(hour), Some(minute)),
             ),
-            // X時
+            // <hour>時
             map(tuple((hour, char('時'))), |(hour, _)| {
                 Time::new(Some(hour), Some(0))
             }),

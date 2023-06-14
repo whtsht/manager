@@ -3,7 +3,14 @@
 //! Purpose     : 数字を解析するパーサー群
 
 use crate::basic::{char, one_of};
-use nom::{branch::alt, combinator::map, multi::many0, sequence::tuple, IResult};
+use nom::{
+    branch::alt,
+    bytes::complete::take_while,
+    combinator::map,
+    multi::{many0, many1},
+    sequence::tuple,
+    IResult,
+};
 
 /// アラビア数字を大文字から小文字に変換する
 fn upper_to_digit(s: char) -> char {
@@ -41,7 +48,7 @@ fn kanzi_to_digit(s: char) -> u32 {
 
 /// 漢数字を一文字解析するパーサー
 ///
-/// * `input`  - 先頭に先頭に数字を含む文字列
+/// * `input`  - 先頭に数字を含む文字列
 ///
 /// 残りの文字列と解析した数値を返す
 fn kanzi_digit_with0(input: &str) -> IResult<&str, u32> {
@@ -50,7 +57,7 @@ fn kanzi_digit_with0(input: &str) -> IResult<&str, u32> {
 
 /// 一九八五のような単純な漢数字を解析するパーサー
 ///
-/// * `input`  - 数字を含む文字列
+/// * `input`  - 先頭に数字を含む文字列
 ///
 /// 残りの文字列と解析した数値を返す
 pub fn simple_kanzi_digits(input: &str) -> IResult<&str, u32> {
@@ -128,21 +135,20 @@ pub fn complex_kanzi_digits(input: &str) -> IResult<&str, u32> {
 pub fn numeric_digits(input: &str) -> IResult<&str, u32> {
     let ascii = one_of("123456789");
     let upper = one_of("１２３４５６７８９");
-    let ascii_with0 = one_of("1234567890");
-    let upper_with0 = one_of("１２３４５６７８９０");
 
-    let first = alt((ascii, map(upper, upper_to_digit)));
-    let rest = many0(alt((ascii_with0, map(upper_with0, upper_to_digit))));
-
-    alt((
-        map(tuple((first, rest)), |(a, b)| {
-            let mut digits = String::new();
-            digits.push(a);
-            digits.extend(b);
-            digits.parse().unwrap()
-        }),
-        map(alt((char('0'), char('０'))), |_| 0),
-    ))(input)
+    map(
+        tuple((
+            take_while(|c| c == '0' || c == '０'),
+            many1(alt((ascii, map(upper, upper_to_digit)))),
+        )),
+        |(_, v)| {
+            if v.len() == 0 {
+                0
+            } else {
+                v.into_iter().collect::<String>().parse().unwrap()
+            }
+        },
+    )(input)
 }
 
 /// アラビア数字，漢数字を解析するパーサー．大文字の数字も解析可能
@@ -171,7 +177,7 @@ mod tests {
 
         // アラビア数字
         assert_eq!(digits("43892は"), Ok(("は", 43892)));
-        assert_eq!(digits("0293"), Ok(("293", 0)));
+        assert_eq!(digits("0293"), Ok(("", 293)));
     }
 
     #[test]

@@ -27,9 +27,10 @@ fn search_word(s: &str) -> bool {
 /// * `verb`  - 動詞のリスト
 ///
 /// 予定名，操作を返す
-pub fn get_word_and_op(
+pub fn get_title_and_op(
     noun: Vec<String>,
     verb: Vec<String>,
+    hint: Vec<String>,
 ) -> (Option<String>, Option<Operation>) {
     let cond = |w: &String| !search_word(w) && !add_word(w) && w != "予定";
     let check_empty = |w: String| {
@@ -39,6 +40,15 @@ pub fn get_word_and_op(
             Some(w)
         }
     };
+
+    if ((hint.contains(&"?".into()) || hint.contains(&"？".into())) && hint.contains(&"は".into()))
+        && hint.iter().filter(|w| add_word(w)).count() == 0
+    {
+        return (
+            Some(noun.into_iter().filter(cond).collect()).and_then(check_empty),
+            Some(Operation::Search),
+        );
+    }
 
     for op in noun.iter().chain(verb.iter()) {
         if search_word(&op) {
@@ -66,37 +76,45 @@ pub fn get_word_and_op(
 mod tests {
     use crate::Operation;
 
-    use super::get_word_and_op;
+    use super::get_title_and_op;
 
     #[test]
-    fn test_get_word_and_op() {
+    fn test_get_title_and_op() {
         assert_eq!(
-            get_word_and_op(
+            get_title_and_op(
                 vec!["予定".to_string(), "検索".to_string()],
-                vec!["".to_string()]
+                vec!["".to_string()],
+                vec![]
             ),
             (None, Some(Operation::Search))
         );
         assert_eq!(
-            get_word_and_op(
+            get_title_and_op(
                 vec!["資格".to_string(), "試験".to_string(), "予定".to_string()],
-                vec!["入る".to_string(), "居る".to_string()]
+                vec!["入る".to_string(), "居る".to_string()],
+                vec![]
             ),
             (Some(String::from("資格試験")), Some(Operation::Add))
         );
         assert_eq!(
-            get_word_and_op(
+            get_title_and_op(
                 vec!["面接".to_string(), "予定".to_string(), "追加".to_string()],
-                vec!["為る".to_string()]
+                vec!["為る".to_string()],
+                vec![]
             ),
             (Some(String::from("面接")), Some(Operation::Add))
         );
         assert_eq!(
-            get_word_and_op(
+            get_title_and_op(
                 vec!["資格".to_string(), "予定".to_string()],
-                vec!["入れる".to_string()]
+                vec!["入れる".to_string()],
+                vec![]
             ),
             (Some(String::from("資格")), Some(Operation::Add))
+        );
+        assert_eq!(
+            get_title_and_op(vec![], vec![], vec!["は".to_string(), "?".to_string()]),
+            (None, Some(Operation::Search))
         );
     }
 }

@@ -141,7 +141,7 @@ pub fn numeric_digits(input: &str) -> IResult<&str, u32> {
             ['0'] => 0,
             v => v
                 .into_iter()
-                .filter(|&&c| c != '0')
+                .skip_while(|&&c| c == '0')
                 .collect::<String>()
                 .parse()
                 .unwrap(),

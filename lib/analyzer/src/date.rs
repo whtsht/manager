@@ -1,6 +1,6 @@
-//! 東間日向
-//! 2023/06/14
-//! 日付情報の定義とその解析
+//! Designer    : 東間日向
+//! Date        : 2023/06/14
+//! Purpose     : 日付情報の定義とその解析
 
 use crate::{basic::*, digits::*};
 use nom::{
@@ -92,6 +92,7 @@ fn get_day(offset: u8) -> Date {
 /// - <month><slash><day>
 /// - <year><slash><month><slash><day>
 /// - <month>月<day>日
+/// - <year>年<month>月<day>日
 ///
 /// * `input`  - 先頭に日付を含む文字列
 ///
@@ -124,6 +125,11 @@ pub fn date_parser(input: &str) -> IResult<&str, Date> {
             map(
                 tuple((month, char('月'), day, char('日'))),
                 |(month, _, day, _)| Date::new(None, Some(month), Some(day)),
+            ),
+            // <year>年<month>月<day>日
+            map(
+                tuple((year, char('年'), month, char('月'), day, char('日'))),
+                |(year, _, month, _, day, _)| Date::new(Some(year), Some(month), Some(day)),
             ),
         )),
         map(tag(""), |_| Date::new(None, None, None)),

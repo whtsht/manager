@@ -16,7 +16,7 @@ import { Plan } from "../plan";
 
 async function addPlan(lineID: string, plan: Plan): Promise<boolean> {
   try {
-    await fetch("/web/add_plan/", {
+    const response = await fetch("/web/add_plan/", {
       method: "POST",
       headers: {
         "content-type": "application/json;charset=UTF-8",
@@ -26,6 +26,11 @@ async function addPlan(lineID: string, plan: Plan): Promise<boolean> {
         plan: plan,
       }),
     });
+
+    if (!response.ok || response.status != 200) {
+      return false;
+    }
+
     return true;
   } catch (e) {
     return false;

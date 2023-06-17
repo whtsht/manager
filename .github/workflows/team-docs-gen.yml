@@ -2,7 +2,7 @@ name: Gantt Charts and Appointment Management Sheets Generator
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
     paths:
       - team/*
       - .github/workflows/**
@@ -33,6 +33,7 @@ jobs:
       working-directory: team
       run: python3 gen_gantt.py
     - name: Push to github
+      working-directory: team
       run: |
         git config user.name team-docs-gen[bot]
         git config user.email team-docs-gen[bot]@users.noreply.github.com

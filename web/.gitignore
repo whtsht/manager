@@ -12,7 +12,7 @@
 /build
 
 # secret file
-./src/secret.tsx
+secret.tsx
 
 # misc
 .DS_Store

@@ -62,9 +62,19 @@ function toPlan(info: EventClickArg): Plan {
  * @returns
  */
 function toEventInput(plan: Plan): EventInput {
+    let start = (plan.start || plan.allDay) as string;
+    start = start.replaceAll("/", "-");
     return {
         id: plan.id,
         title: plan.title,
+        start,
+        extendedProps: {
+            detail: plan.detail,
+            notifTime: plan.notifTime,
+            allDay: plan.allDay,
+            start: plan.start,
+            end: plan.end,
+        },
     };
 }
 

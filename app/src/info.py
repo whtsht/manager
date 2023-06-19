@@ -1,6 +1,6 @@
 """
 Designer:   東間日向
-Date:       2023/0617
+Date:       2023/06/17
 Purpose:    他モジュールで使うクラスの定義
 """
 from typing import Optional
@@ -126,6 +126,7 @@ class InputInfo:
         """
         return PlanInfo(self.title, self.start_time)
 
+
 class UserState:
     """利用者の入力情報を表す
     Attributes:
@@ -150,5 +151,3 @@ class UserState:
         self.completed = completed
         self.plan_info = plan_info
         self.plan_list = plan_list
-
-

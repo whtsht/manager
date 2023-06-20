@@ -1,6 +1,5 @@
 from flask import Blueprint
 
-from db_models import Plan
 
 web = Blueprint("web", __name__, url_prefix="/web")
 

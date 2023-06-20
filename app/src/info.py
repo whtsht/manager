@@ -151,3 +151,34 @@ class UserState:
         self.completed = completed
         self.plan_info = plan_info
         self.plan_list = plan_list
+
+
+class AddErrorType(Enum):
+    """データの追加処理エラータイプ"""
+
+    AlreadyExist = 1
+    TitleNotSet = 2
+    TimeNotSet = 3
+
+
+class AddError:
+    """データの追加処理エラー情報
+
+    Attributes:
+        error_type (AddErrorType):
+            エラータイプ
+        title      (Optional[str]):
+            タイトル
+        start_time (Optional[DataTime]):
+            開始時刻
+    """
+
+    def __init__(
+        self,
+        error_type: AddErrorType,
+        title: None | str = None,
+        start_time: None | DateTime = None,
+    ):
+        self.error_type = error_type
+        self.title = title
+        self.start_time = start_time

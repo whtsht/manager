@@ -29,15 +29,15 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
  */
 function PlanShowDialog({
     open,
-    closeHandle,
-    openModify,
-    openDelete,
+    handleClose,
+    handleOpenModify,
+    handleOpenDelete,
     plan,
 }: {
     open: boolean;
-    closeHandle: () => void;
-    openModify: () => void;
-    openDelete: () => void;
+    handleClose: () => void;
+    handleOpenModify: () => void;
+    handleOpenDelete: () => void;
     plan: Plan | null;
 }) {
     if (plan == null) {
@@ -60,16 +60,16 @@ function PlanShowDialog({
     return (
         <Dialog
             open={open}
-            onClose={closeHandle}
+            onClose={handleClose}
             aria-labelledby="responsive-dialog-title"
         >
             <TitleContent title={plan?.title} />
             <DetailContent detail={plan?.detail} />
             {TimeContents}
             <ActionContent
-                handleClose={closeHandle}
-                openModify={openModify}
-                openDelete={openDelete}
+                handleClose={handleClose}
+                openModify={handleOpenModify}
+                openDelete={handleOpenDelete}
             />
         </Dialog>
     );

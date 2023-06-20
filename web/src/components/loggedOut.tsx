@@ -22,9 +22,9 @@ function loggedOut() {
       <h1>予定管理をより 手軽に！</h1>
       <h2>アシスタントマネージャシステム</h2>
       <h2>Assistant Manager System</h2>
-      <img src={nonlogin} />
+      <img src={nonlogin} alt="イラスト" />
       <h4>今すぐ下のQRコードから友達追加</h4>
-      <img src={qrCode} />
+      <img src={qrCode} alt="qrコード" />
       <Button
         border="none"
         color="blue"
@@ -35,9 +35,9 @@ function loggedOut() {
         children="lineログインはここをクリック"
       />
       <h2>lineから予定と通知時間を登録すると...</h2>
-      <img src={line1} />
+      <img src={line1} alt="line1" />
       <h2>lineでお知らせしてくれる!</h2>
-      <img src={line2} />
+      <img src={line2} alt="line2" />
     </>
   );
 }

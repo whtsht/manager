@@ -2,6 +2,9 @@ FROM rust:latest
 
 WORKDIR /app
 
+RUN apt update \
+    && apt -y install libmecab-dev
+
 ADD ./lib/analyzer /app
 
 RUN cargo build --release

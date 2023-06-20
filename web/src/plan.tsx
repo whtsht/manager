@@ -12,7 +12,7 @@ interface Plan {
     /**
      * 予定 ID
      */
-    id: string;
+    id: number;
     /**
      * 予定名
      */
@@ -46,7 +46,7 @@ interface Plan {
  */
 function toPlan(info: EventClickArg): Plan {
     return {
-        id: info.event.id,
+        id: Number.parseInt(info.event.id),
         title: info.event.title,
         detail: info.event.extendedProps.detail,
         notifTime: info.event.extendedProps.notif_time,
@@ -65,7 +65,7 @@ function toEventInput(plan: Plan): EventInput {
     let start = (plan.start || plan.allDay) as string;
     start = start.replaceAll("/", "-");
     return {
-        id: plan.id,
+        id: plan.id.toString(),
         title: plan.title,
         start,
         extendedProps: {

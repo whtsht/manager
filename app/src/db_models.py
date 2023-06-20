@@ -1,16 +1,34 @@
+"""
+Designer:   東間日向
+Date:       2023/06/17
+Purpose:    データベースに保存するクラスの定義
+"""
 from flask_sqlalchemy import SQLAlchemy
-from src.info import StrictDateTime
+from info import StrictDateTime
 from typing import Optional
 from datetime import datetime
 
+# データベースのインスタンス
 db = SQLAlchemy()
 
 
 class Plan(db.Model):
+    """F1 予定情報を格納する
+    Attributes:
+        id: 予定ID
+        line_id: LineID
+        title: 予定名
+        detail: 詳細
+        notif_time: 通知時刻
+        allday: 終日
+        start_time: 開始時刻
+        end_time: 終了時刻
+    """
+
     __tablename__ = "plans"
     id: int = db.Column(db.Integer, primary_key=True)
-    title: str = db.Column(db.String(100), nullable=False)
     line_id: str = db.Column(db.String(50), nullable=False)
+    title: str = db.Column(db.String(100), nullable=False)
     detail: Optional[str] = db.Column(db.String(300), nullable=False)
     notif_time: datetime = db.Column(db.DateTime, nullable=False)
     allday: Optional[datetime] = db.Column(db.DateTime, nullable=True)
@@ -44,8 +62,8 @@ class Plan(db.Model):
             end_time (Optional[StrictDateTime]):
                 終了時刻
         """
-        self.title = title
         self.line_id = line_id
+        self.title = title
         self.detail = detail
         self.notif_time = notif_time.into()
         self.allday = into_datatime(allday)

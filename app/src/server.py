@@ -1,3 +1,8 @@
+"""
+Designer:   東間日向
+Date:       2023/06/18
+Purpose:    サーバーの初期設定
+"""
 from flask import Flask
 from enum import Enum
 from web import web

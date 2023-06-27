@@ -5,7 +5,7 @@ Purpose:    C9 リクエスト処理に関するモジュール群
 """
 
 from flask import request, jsonify
-from db_models import Plan, db
+from info import Plan, db
 from flask import Blueprint
 
 
@@ -35,8 +35,7 @@ def get_plan_list():
 
 @web.route("/add_plan/", methods=["POST"])
 def add_plan():
-    """M35 予定追加処理
-    """
+    """M35 予定追加処理"""
     if data := request.json:
         plan = data["plan"]
         db.session.add(plan)
@@ -47,8 +46,7 @@ def add_plan():
 
 @web.route("/modify_plan/", methods=["POST"])
 def modify_plan():
-    """M36 予定修正処理
-    """
+    """M36 予定修正処理"""
     if data := request.json:
         plan: Plan = data["plan"]
         db_plan: Plan = Plan.query.filter_by(Plan.id == plan.id).first()
@@ -65,8 +63,7 @@ def modify_plan():
 
 @web.route("/remove_plan/", methods=["POST"])
 def remove_plan():
-    """M37 予定削除処理
-    """
+    """M37 予定削除処理"""
     if data := request.json:
         plan_id = data["planID"]
         Plan.query.filter_by(Plan.id == plan_id).delete()

@@ -6,6 +6,7 @@ Purpose:    サーバーの初期設定
 from flask import Flask
 from enum import Enum
 from web import web
+from info import db
 import logging
 
 
@@ -24,6 +25,9 @@ def create_app(mode: Mode):
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
 
     app.register_blueprint(web)
+    with app.app_context():
+        db.init_app(app)
+        db.create_all()
     return app
 
 

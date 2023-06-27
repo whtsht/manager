@@ -22,6 +22,25 @@ fn test_analyze() {
         if title == "面接".to_string()
     ));
     assert!(matches!(
+        analyze("明日のに面接の予定"),
+        Response {
+            operation: Some(Operation::Add),
+            date_time: DateTime {
+                date: Date {
+                    year: Some(_),
+                    month: Some(_),
+                    day: Some(_),
+                },
+                time: Time {
+                    hour: None,
+                    minute: None
+                }
+            },
+             title: Some(title),
+        }
+        if title == "面接".to_string()
+    ));
+    assert!(matches!(
         analyze("明日は５時起き"),
         Response {
             operation: Some(Operation::Add),
@@ -49,6 +68,42 @@ fn test_analyze() {
                     year: Some(_),
                     month: Some(_),
                     day: Some(_)
+                },
+                time: Time {
+                    hour: None,
+                    minute: None
+                }
+            },
+            title: None,
+        }
+    ));
+    assert!(matches!(
+        analyze("予定"),
+        Response {
+            operation: Some(Operation::Add),
+            date_time: DateTime {
+                date: Date {
+                    year: None,
+                    month: None,
+                    day: None
+                },
+                time: Time {
+                    hour: None,
+                    minute: None
+                }
+            },
+            title: None,
+        }
+    ));
+    assert!(matches!(
+        analyze("予定検索"),
+        Response {
+            operation: Some(Operation::Search),
+            date_time: DateTime {
+                date: Date {
+                    year: None,
+                    month: None,
+                    day: None
                 },
                 time: Time {
                     hour: None,

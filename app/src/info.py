@@ -196,32 +196,6 @@ class InputInfo:
         return PlanInfo(self.title, self.start_time)
 
 
-class UserState:
-    """利用者の入力情報を表す
-    Attributes:
-        op (OP):
-            操作
-        completed (bool):
-            処理が完了したかどうか
-        plan_info (PlanInfo):
-            予定情報
-        plan_list (Optional[list[Plan]]):
-            検索した予定のリスト．追加操作では使わない
-    """
-
-    def __init__(
-        self,
-        op: OP,
-        completed: bool,
-        plan_info: PlanInfo,
-        plan_list: Optional[list[Plan]],
-    ):
-        self.op = op
-        self.completed = completed
-        self.plan_info = plan_info
-        self.plan_list = plan_list
-
-
 class AddErrorType(Enum):
     """追加処理エラータイプ"""
 
@@ -273,6 +247,40 @@ class SearchError:
     def __init__(self, error_type: SearchErrorType, title: Optional[str] = None):
         self.error_type = error_type
         self.title = title
+
+
+class UserState:
+    """利用者の入力情報を表す
+    Attributes:
+        op (OP):
+            操作
+        completed (bool):
+            処理が完了したかどうか
+        plan_info (PlanInfo):
+            予定情報
+        plan_list (Optional[list[Plan]]):
+            検索した予定のリスト．追加操作では使わない
+        add_error (Optional[AddError]):
+            予定追加のエラー
+        search_error (Optional[SearchError]):
+            予定検索のエラー
+    """
+
+    def __init__(
+        self,
+        op: OP,
+        completed: bool,
+        plan_info: PlanInfo,
+        plan_list: Optional[list[Plan]],
+        add_error: Optional[AddError],
+        search_error: Optional[SearchError],
+    ):
+        self.op = op
+        self.completed = completed
+        self.plan_info = plan_info
+        self.plan_list = plan_list
+        self.add_error = add_error
+        self.search_error = search_error
 
 
 def into_datatime(time: Optional[StrictDateTime]) -> Optional[datetime]:

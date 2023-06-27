@@ -135,6 +135,10 @@ class Plan(db.Model):
         self.end_time = into_datatime(end_time)
 
 
+def get_start_time(plan: Plan) -> datetime:
+    return plan.allday or plan.start_time  # type: ignore
+
+
 class OP(Enum):
     """操作
     Add:

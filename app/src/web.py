@@ -7,6 +7,7 @@ Purpose:    C9 リクエスト処理に関するモジュール群
 from flask import request, jsonify
 from info import Plan, db
 from flask import Blueprint
+from datetime import datetime
 
 
 web = Blueprint("web", __name__, url_prefix="/web")
@@ -33,12 +34,27 @@ def get_plan_list():
         return jsonify([])
 
 
+def to_datetime(value) -> datetime | None:
+    return datetime.strptime(value, "%Y/%m/%dT%H:%M") if value is not None else None
+
+
+def from_json(line_id, data: dict[str, any]) -> Plan:  # type: ignore
+    title = data["title"]
+    detail = data["detail"]
+    notif_time = datetime.strptime(data["notifTime"], "%Y/%m/%dT%H:%M")
+    allday = to_datetime(data["allDay"])
+    start_time = to_datetime(data["start"])
+    end_time = to_datetime(data["end"])
+    return Plan(title, line_id, detail, notif_time, allday, start_time, end_time)
+
+
 @web.route("/add_plan/", methods=["POST"])
 def add_plan():
     """M35 予定追加処理"""
     if data := request.json:
-        plan = data["plan"]
-        db.session.add(plan)
+        line_id = data["lineID"]
+        new_plan = from_json(line_id, data["plan"])
+        db.session.add(new_plan)
         db.session.commit()
 
     return "ok"

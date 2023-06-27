@@ -33,14 +33,15 @@ def datetime_from_dict(obj: dict[str, dict[str, Optional[int]]]) -> DateTime:
     )
 
 
-def input_info_from_dict(json) -> InputInfo:
+def input_info_from_dict(obj) -> InputInfo:
     return InputInfo(
-        json["title"],
-        operation_from_str(json["operation"]),
-        datetime_from_dict(json["date_time"]),
+        obj["title"].strip('"') if obj["title"] is not None else None,
+        operation_from_str(obj["operation"]),
+        datetime_from_dict(obj["date_time"]),
     )
 
 
 def analyze_message(input: str) -> InputInfo:
-    response = subprocess.check_output(["analyze", f'"{input}"'], encoding="utf-8")
+    analyzer = subprocess.Popen(["analyzer", input], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    response, _ = analyzer.communicate()
     return input_info_from_dict(json.loads(response))

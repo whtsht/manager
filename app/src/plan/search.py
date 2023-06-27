@@ -4,11 +4,11 @@ Date:       2023/06/26
 Purpose:    予定検索
 """
 
-from web import web
-from info import PlanInfo, Plan, SearchError, SearchErrorType, db, get_start_time
+from info import PlanInfo, Plan, SearchError, SearchErrorType, get_start_time
 
-def from_message(line_id:str, plan_info:PlanInfo):
-    """M31 予定検索処理　データベースから予定を検索
+
+def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchErrorType:
+    """M31 予定検索処理 データベースから予定を検索
 
     Args:
         line_id (str): LINEのid
@@ -17,22 +17,45 @@ def from_message(line_id:str, plan_info:PlanInfo):
     Returns:
         Plan (list || SearchErrorType): エラーの詳細、予定の詳細
     """
-    if plan_info.title is None and plan_info.start_time is None:
+    # タイトルも日付も指定されない．エラー
+    if plan_info.title is None and plan_info.start_time.date.day is None:
         return SearchErrorType.LackInfo
 
-    elif db.session.query(Plan).filter(Plan.title == plan_info.title).filter(get_start_time(Plan) == plan_info.start_time).first() is None:
+    # タイトルのみ
+    if plan_info.title is not None and plan_info.start_time.date.day is None:
+        plans = Plan.query.filter(Plan).filter(Plan.title == plan_info.title).all()
+        if len(plans) == 0:
+            return SearchErrorType.NotFound
+        else:
+            return plans
+
+    # 日付のみ
+    if plan_info.title is None and plan_info.start_time.date.day is not None:
+        plans = (
+            Plan.query.filter(Plan)
+            .filter(get_start_time(Plan).day == plan_info.start_time.date.day)
+            .all()
+        )
+        if len(plans) == 0:
+            return SearchErrorType.NotFound
+        else:
+            return plans
+
+    # 両方指定されている
+    plans = (
+        Plan.query.filter(Plan)
+        .filter(Plan.title == plan_info.title)
+        .filter(get_start_time(Plan).day == plan_info.start_time.date.day)
+        .all()
+    )
+    if len(plans) == 0:
         return SearchErrorType.NotFound
-    
-    elif plan_info.title is None:
-        #時間のみ
-        return db.session.query(Plan).filter(get_start_time(Plan) == plan_info.start_time).all()
-    
     else:
-        #両方指定されている場合
-        return db.session.query(Plan).filter(Plan.title == plan_info.title).filter(get_start_time(Plan) == plan_info.start_time).all()
-    
+        return plans
+
+
 def uncompleted_message(error: SearchError):
-    """M32 検索情報不足通知　検索できなかった場合の応答
+    """M32 検索情報不足通知 検索できなかった場合の応答
 
     Args:
         error (SearchError): 検索処理のエラータイプ
@@ -44,9 +67,9 @@ def uncompleted_message(error: SearchError):
         return "予定を見つけることができませんでした。"
     if error.error_type == SearchErrorType.LackInfo:
         return "予定のタイトル、開始時刻のどちらかを入力して下さい。"
-    
 
-def completed_message(plan_info:PlanInfo, plan_list:list[Plan]):
+
+def completed_message(plan_info: PlanInfo, plan_list: list[Plan]):
     """M33 予定送信処理 検索された予定の情報を知らせる
 
     Args:
@@ -54,7 +77,7 @@ def completed_message(plan_info:PlanInfo, plan_list:list[Plan]):
         plan_list (list[Plan]): 予定のリスト
 
     Returns:
-        mes (str): メッセージ 
+        mes (str): メッセージ
     """
     mes = f"予定が見つかりました。タイトルは{plan_info.title}、開始時間は{plan_info.start_time}です。"
     return mes

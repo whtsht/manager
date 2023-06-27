@@ -18,7 +18,7 @@ def add_plan(plan: Plan):
     Returns: なし
     """
     db.session.add(plan)
-    db.session.comit()
+    db.session.commit()
 
 
 def uncompleted_message(error: AddError):

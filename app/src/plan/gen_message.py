@@ -24,18 +24,18 @@ def gen_message(lineID: str):
     """
     st = status[lineID]
     message = ""
-    if st.op == OP.Add and st.complited is True:
+    if st.op == OP.Add and st.completed is True:
         message = add.complited_message(st.plan_info)
         del status[lineID]
 
-    elif st.op == OP.Add and st.complited is False:
+    elif st.op == OP.Add and st.completed is False:
         message = add.uncompleted_message(st.add_error)
 
-    elif st.op == OP.Search and st.complited is True:
+    elif st.op == OP.Search and st.completed is True:
         message = search.completed_message(st.plan_info, st.plan_list)
         del status[lineID]
 
-    elif st.op == OP.Search and st.complited is False:
+    elif st.op == OP.Search and st.completed is False:
         message = search.uncompleted_message(st.search_error)
 
     return message

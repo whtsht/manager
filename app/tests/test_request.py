@@ -33,6 +33,28 @@ def test_hello(client):
     assert b"hello :)" == result.data
 
 
+mockLineID = "xjoqwejadfldskhfawe12"
+
+
 def test_add_plan(client):
-    result = client.post("/web/add_plan/", json={})
-    assert b""
+    result = client.post(
+        "/web/add_plan/",
+        json={
+            "lineID": mockLineID,
+            "plan": {
+                "title": "タイトル",
+                "detail": "詳細",
+                "notifTime": "2023/03/03T13:33",
+                "allDay": "2023/03/03T13:33",
+                "start": None,
+                "end": None,
+            },
+        },
+    )
+
+    assert b"ok" == result.data
+
+    plans = Plan.query.all()
+    assert len(plans) == 1
+    assert plans[0].title == "タイトル"
+    assert plans[0].notif_time.hour == 13

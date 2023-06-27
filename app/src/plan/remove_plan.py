@@ -15,11 +15,7 @@ def remove_plan(plan_id: str):
     Args: 
         str (plan_id): 予定のid
     """
+
     plan = db.session.query(Plan).filter(Plan.plan_id == plan_id).first()
     db.session.delete(plan)
     db.session.commit()
-
-
-
-
-

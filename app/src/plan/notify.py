@@ -10,14 +10,14 @@ from info import Plan
 from src.secret import CHANNEL_ACCESS_TOKEN
 from datetime import timedelta
 from line import push_buttons_message
-from line import  push_text_message
+from line import push_text_message
+
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 
 sched = APScheduler()
 
 # lineID => 予定を検索
 latest_plan: dict[str, Plan] = {}
-
 
 
 def gen_id(line_id: str, title: str, date: datetime) -> str:
@@ -31,7 +31,6 @@ def gen_id(line_id: str, title: str, date: datetime) -> str:
         line_id + "_" + title + "_" + str(date)
     """
     return line_id + "_" + title + "_" + str(date)
-
 
 
 def add_notification(line_id: str, plan: Plan):
@@ -76,23 +75,20 @@ def snooze(line_id: str, after: int):
     # TODO
     # 現在時刻からafter分後の時刻を取得
     # add_notificationを使って通知設定する
-    
+
     if line_id in latest_plan:
         plan = latest_plan[line_id]
         start_time = plan.start_time or plan.allday
         current_time = datetime.now()
         snooze_time = current_time + timedelta(minutes=after)
-        
-        
-        if snooze_time < start_time: # type: ignore
-            plan.notif_time = snooze_time
-            add_notification(line_id, plan) 
-        else:
-            push_text_message(line_id: str, "予定が古すぎます。"):
-    else:
-        push_text_message(line_id: str, "該当する予定が見つかりません。"):
-    #plan = latest_plan[line_id]
 
+        if snooze_time < start_time:  # type: ignore
+            plan.notif_time = snooze_time
+            add_notification(line_id, plan)
+        else:
+            push_text_message(line_id, "予定が古すぎます。")
+    else:
+        push_text_message(line_id, "該当する予定が見つかりません。")
 
 
 def send_notification(line_id: str, plan: Plan):
@@ -102,7 +98,9 @@ def send_notification(line_id: str, plan: Plan):
         line_id (str): lineID
         plan (Plan): プラン
     """
-    push_buttons_message(line_id: str, plan.title + "の時間です", "何分後にスヌーズ設定を設定するのか押してください", ["5分","10分","15分"])
-    
+    push_buttons_message(
+        line_id, plan.title + "の時間です", "何分後にスヌーズ設定を設定するのか押してください", ["5分", "10分", "15分"]
+    )
+
     # 予定を記録
     latest_plan[line_id] = plan

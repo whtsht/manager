@@ -29,13 +29,13 @@ def gen_message(lineID: str):
         del status[lineID]
 
     elif st.op == OP.Add and st.completed is False:
-        message = add.uncompleted_message(st.add_error)
+        message = add.uncompleted_message(st.add_error)  # type: ignore
 
     elif st.op == OP.Search and st.completed is True:
-        message = search.completed_message(st.plan_info, st.plan_list)
+        message = search.completed_message(st.plan_info, st.plan_list)  # type: ignore
         del status[lineID]
 
     elif st.op == OP.Search and st.completed is False:
-        message = search.uncompleted_message(st.search_error)
+        message = search.uncompleted_message(st.search_error)  # type: ignore
 
     return message

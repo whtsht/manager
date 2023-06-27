@@ -1,7 +1,7 @@
 """
 Designer    : 東間日向
-Date        : 2023/06
-Purpose     : <目的>
+Date        : 2023/06/27
+Purpose     : Line SDK との連携
 """
 from flask import request, abort, Blueprint
 from linebot import LineBotApi, WebhookHandler

@@ -66,10 +66,10 @@ def uncompleted_message(error: SearchError) -> str:
     if error.error_type == SearchErrorType.NotFound:
         return "予定を見つけることができませんでした。"
 
-    return "予定のタイトル、開始時刻のどちらかを入力して下さい。"
+    return "予定のタイトル、日付のどちらかを入力して下さい。"
 
 
-def completed_message(plan_info: PlanInfo, plan_list: list[Plan]) -> str:
+def completed_message(_: PlanInfo, plan_list: list[Plan]) -> str:
     """M33 予定送信処理 検索された予定の情報を知らせる
 
     Args:
@@ -79,5 +79,9 @@ def completed_message(plan_info: PlanInfo, plan_list: list[Plan]) -> str:
     Returns:
         mes (str): メッセージ
     """
-    mes = f"予定が見つかりました。タイトルは{plan_info.title}、開始時間は{plan_info.start_time}です。"
+    mes = "予定が見つかりました。\n"
+
+    for i in range(len(plan_list)):
+        mes += plan_list[i].title + "\n"
+        mes += str(plan_list[i].start_time or plan_list[i].allday) + "\n\n"
     return mes

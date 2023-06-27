@@ -154,7 +154,7 @@ class UserState:
 
 
 class AddErrorType(Enum):
-    """データの追加処理エラータイプ"""
+    """追加処理エラータイプ"""
 
     AlreadyExist = 1
     TitleNotSet = 2
@@ -162,23 +162,43 @@ class AddErrorType(Enum):
 
 
 class AddError:
-    """データの追加処理エラー情報
+    """追加処理エラー情報
 
-    Attributes:
+    attributes:
         error_type (AddErrorType):
             エラータイプ
         title      (Optional[str]):
             タイトル
-        start_time (Optional[DataTime]):
+        start_time (Optional[DateTime]):
             開始時刻
     """
 
     def __init__(
         self,
         error_type: AddErrorType,
-        title: None | str = None,
-        start_time: None | DateTime = None,
+        title: Optional[str] = None,
+        start_time: Optional[DateTime] = None,
     ):
         self.error_type = error_type
         self.title = title
         self.start_time = start_time
+
+
+class SearchErrorType(Enum):
+    """検索処理のエラータイプ"""
+    NotFound = 1
+    LackInfo = 2
+
+class SearchError:
+    """追加処理エラー情報
+
+    attributes:
+        error_type (SearchErrorType):
+            エラータイプ
+        title      (Optional[str]):
+            タイトル
+    """
+    
+    def __init__(self, error_type: SearchErrorType, title: Optional[str] = None):
+        self.error_type = error_type
+        self.title = title

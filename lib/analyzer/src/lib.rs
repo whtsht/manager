@@ -3,14 +3,14 @@
 //! Purpose     : M14 変換関数と意味解析コンポーネントエントリーポイント
 
 pub mod basic;
-pub mod data_time;
 pub mod date;
+pub mod date_time;
 pub mod digits;
 pub mod time;
 pub mod title_op;
 
-use crate::{data_time::time_word, title_op::get_title_and_op};
-use data_time::{get_date_time, DateTime};
+use crate::{date_time::time_word, title_op::get_title_and_op};
+use date_time::{get_date_time, DateTime};
 use mecab::Tagger;
 use serde::Serialize;
 

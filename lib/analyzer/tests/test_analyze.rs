@@ -1,4 +1,4 @@
-use analyzer::{analyze, data_time::DateTime, date::Date, time::Time, Operation, Response};
+use analyzer::{analyze, date::Date, date_time::DateTime, time::Time, Operation, Response};
 
 #[test]
 fn test_analyze() {

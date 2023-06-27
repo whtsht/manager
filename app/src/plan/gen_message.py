@@ -8,7 +8,7 @@ from plan.main import status
 from info import OP
 
 
-def gen_message(lineID: str):
+def gen_message(lineID: str) -> str:
     """.statusからop/complitedを取り出す.
     もしAdd/TrueならばM28を呼び出す.
     もしAdd/FalseならばM27を呼び出す.

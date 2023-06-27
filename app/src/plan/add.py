@@ -78,7 +78,7 @@ def add_plan(plan: Plan):
     db.session.commit()
 
 
-def uncompleted_message(error: AddError):
+def uncompleted_message(error: AddError) -> str:
     """エラーメッセージを作成する
     Args: error: どのタイプのエラーか
     Returns: エラーメッセージ"""
@@ -86,11 +86,11 @@ def uncompleted_message(error: AddError):
         return "その予定は既に追加されています"
     if error.error_type == AddErrorType.TitleNotSet:
         return "タイトルが設定されていません"
-    if error.error_type == AddErrorType.TimeNotSet:
-        return "開始時間が設定されていません"
+
+    return "開始時間が設定されていません"
 
 
-def complited_message(plan_info: PlanInfo):
+def complited_message(plan_info: PlanInfo) -> str:
     """完了メッセージを作成する
 
     Args:

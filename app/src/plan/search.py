@@ -54,7 +54,7 @@ def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchErrorType:
         return plans
 
 
-def uncompleted_message(error: SearchError):
+def uncompleted_message(error: SearchError) -> str:
     """M32 検索情報不足通知 検索できなかった場合の応答
 
     Args:
@@ -65,11 +65,11 @@ def uncompleted_message(error: SearchError):
     """
     if error.error_type == SearchErrorType.NotFound:
         return "予定を見つけることができませんでした。"
-    if error.error_type == SearchErrorType.LackInfo:
-        return "予定のタイトル、開始時刻のどちらかを入力して下さい。"
+
+    return "予定のタイトル、開始時刻のどちらかを入力して下さい。"
 
 
-def completed_message(plan_info: PlanInfo, plan_list: list[Plan]):
+def completed_message(plan_info: PlanInfo, plan_list: list[Plan]) -> str:
     """M33 予定送信処理 検索された予定の情報を知らせる
 
     Args:

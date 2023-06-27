@@ -1,7 +1,7 @@
 from info import InputInfo
 from info import UserState
 
-states: dict[str, UserState] = {}
+status: dict[str, UserState] = {}
 
 
 def integrate_input(line_id: str, input_info: InputInfo) -> InputInfo:
@@ -10,10 +10,10 @@ def integrate_input(line_id: str, input_info: InputInfo) -> InputInfo:
           input_info:入力情報
     Returns: Input_info:入力情報
     """
-    if line_id in states:
-        input_info.title = input_info.title or states[line_id].plan_info.title
-        input_info.op = input_info.op or states[line_id].op
+    if line_id in status:
+        input_info.title = input_info.title or status[line_id].plan_info.title
+        input_info.op = input_info.op or status[line_id].op
         input_info.start_time = (
-            input_info.start_time or states[line_id].plan_info.start_time
+            input_info.start_time or status[line_id].plan_info.start_time
         )
     return input_info

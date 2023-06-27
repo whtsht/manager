@@ -14,11 +14,11 @@ def modify_plan(_: int, plan: Plan):
         plan_id (int): 予定情報
         plan (Plan): 予定
     """
-    db_PLAN: Plan = Plan.query.filter_by(Plan.id == plan.id).first()
-    db_PLAN.title = plan.title
-    db_PLAN.detail = plan.detail
-    db_PLAN.notif_time = plan.notif_time
-    db_PLAN.allday = plan.allday
-    db_PLAN.start_time = plan.start_time
-    db_PLAN.end_time = plan.end_time
+    db_plan: Plan = Plan.query.filter_by(Plan.id == plan.id).first()
+    db_plan.title = plan.title
+    db_plan.detail = plan.detail
+    db_plan.notif_time = plan.notif_time
+    db_plan.allday = plan.allday
+    db_plan.start_time = plan.start_time
+    db_plan.end_time = plan.end_time
     db.session.commit()

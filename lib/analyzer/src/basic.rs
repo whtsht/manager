@@ -49,10 +49,7 @@ pub fn tag<'a>(target: &'a str) -> impl FnMut(&'a str) -> IResult<&'a str, &'a s
 ///
 /// `target`のいずれか1文字を読み飛ばすパーサー
 pub fn one_of<'a>(target: &'a str) -> impl FnMut(&'a str) -> IResult<&'a str, char> {
-    preceded(
-        spaces,
-        terminated(nom::character::complete::one_of(target), spaces),
-    )
+    nom::character::complete::one_of(target)
 }
 
 /// スラッシュを読み飛ばすパーサー

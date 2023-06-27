@@ -99,40 +99,33 @@ fn get_day(offset: u8) -> Date {
 /// 残りの文字列と解析した日付情報を返す
 pub fn date_parser(input: &str) -> IResult<&str, Date> {
     alt((
-        alt((
-            // 今日
-            map(tag("今日"), |_| get_day(0)),
-            // 明日
-            map(tag("明日"), |_| get_day(1)),
-            // 明後日
-            map(tag("明後日"), |_| get_day(2)),
-            // 明々後日
-            map(tag("明々後日"), |_| get_day(3)),
-            // <month><slash><day>
-            map(tuple((month, slash, day)), |(month, _, day)| {
-                Date::new(None, Some(month), Some(day))
-            }),
-            // <year><slash><month><slash><day>
-            map(
-                tuple((year, slash, month, slash, day)),
-                |(year, _, month, _, day)| Date::new(Some(year), Some(month), Some(day)),
-            ),
-            // <month><slash><day>
-            map(tuple((month, slash, day)), |(month, _, day)| {
-                Date::new(None, Some(month), Some(day))
-            }),
-            // <month>月<day>日
-            map(
-                tuple((month, char('月'), day, char('日'))),
-                |(month, _, day, _)| Date::new(None, Some(month), Some(day)),
-            ),
-            // <year>年<month>月<day>日
-            map(
-                tuple((year, char('年'), month, char('月'), day, char('日'))),
-                |(year, _, month, _, day, _)| Date::new(Some(year), Some(month), Some(day)),
-            ),
-        )),
-        map(tag(""), |_| Date::new(None, None, None)),
+        // 今日
+        map(tag("今日"), |_| get_day(0)),
+        // 明日
+        map(tag("明日"), |_| get_day(1)),
+        // 明後日
+        map(tag("明後日"), |_| get_day(2)),
+        // 明々後日
+        map(tag("明々後日"), |_| get_day(3)),
+        // <year><slash><month><slash><day>
+        map(
+            tuple((year, slash, month, slash, day)),
+            |(year, _, month, _, day)| Date::new(Some(year), Some(month), Some(day)),
+        ),
+        // <month><slash><day>
+        map(tuple((month, slash, day)), |(month, _, day)| {
+            Date::new(None, Some(month), Some(day))
+        }),
+        // <month>月<day>日
+        map(
+            tuple((month, char('月'), day, char('日'))),
+            |(month, _, day, _)| Date::new(None, Some(month), Some(day)),
+        ),
+        // <year>年<month>月<day>日
+        map(
+            tuple((year, char('年'), month, char('月'), day, char('日'))),
+            |(year, _, month, _, day, _)| Date::new(Some(year), Some(month), Some(day)),
+        ),
     ))(input)
 }
 
@@ -141,5 +134,16 @@ fn test_date_parser() {
     assert_eq!(
         date_parser("2/15"),
         Ok(("", Date::new(None, Some(2), Some(15))))
+    );
+    assert_eq!(
+        date_parser("2023/2/15"),
+        Ok(("", Date::new(Some(2023), Some(2), Some(15))))
+    );
+    assert_eq!(
+        map(
+            tuple((year, slash, month, slash, day)),
+            |(year, _, month, _, day)| { Date::new(Some(year), Some(month), Some(day)) }
+        )("2023/7/11 16:30"),
+        Ok((" 16:30", Date::new(Some(2023), Some(7), Some(11))))
     );
 }

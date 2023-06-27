@@ -70,6 +70,7 @@ pub fn filter_time_word(mut input: &str) -> String {
             let mut r = input.chars();
             r.next().unwrap();
             input = r.as_str();
+            words.push(" ".to_string());
         }
     }
 }
@@ -78,13 +79,14 @@ pub fn filter_time_word(mut input: &str) -> String {
 fn test_split_time_word() {
     assert_eq!(
         filter_time_word("いい2/15ああ 16:30 aljdk"),
-        String::from("2/1516:30")
+        String::from("  2/15   16:30      ")
+    );
+    assert_eq!(
+        filter_time_word("2023/7/11の16:00"),
+        String::from("2023/7/11 16:00")
     );
 }
 
-///
-///
-///
 pub fn date_time_parser(input: &str) -> IResult<&str, (Date, Time)> {
     alt((
         tuple((date_parser, time_parser)),
@@ -113,20 +115,20 @@ pub fn get_date_time(input: &str) -> DateTime {
             return DateTime::new(date, time);
         }
 
-        match date_time_parser(word) {
-            Ok((_, (date, time))) if !date.is_none() && !time.is_none() => {
-                return DateTime::new(date, time);
-            }
-            _ => {}
+        if !date.is_none() && !time.is_none() {
+            return DateTime::new(date, time);
         }
+
         match date_parser(word) {
             Ok((rest, d)) => {
                 date = d;
                 word = rest;
+
                 continue;
             }
             _ => {}
         }
+
         match time_parser(word) {
             Ok((rest, t)) => {
                 time = t;
@@ -135,5 +137,9 @@ pub fn get_date_time(input: &str) -> DateTime {
             }
             _ => {}
         }
+
+        let mut chars = word.chars();
+        chars.next();
+        word = chars.as_str();
     }
 }

@@ -63,22 +63,19 @@ fn minute(input: &str) -> IResult<&str, u8> {
 /// 残りの文字列と解析した時間情報を返す
 pub fn time_parser(input: &str) -> IResult<&str, Time> {
     alt((
-        alt((
-            // <hour><colon><minute>
-            map(tuple((hour, colon, minute)), |(hour, _, minute)| {
-                Time::new(Some(hour), Some(minute))
-            }),
-            // <hour>時<minute>分
-            map(
-                tuple((hour, char('時'), minute, char('分'))),
-                |(hour, _, minute, _)| Time::new(Some(hour), Some(minute)),
-            ),
-            // <hour>時
-            map(tuple((hour, char('時'))), |(hour, _)| {
-                Time::new(Some(hour), Some(0))
-            }),
-        )),
-        map(tag(""), |_| Time::new(None, None)),
+        // <hour><colon><minute>
+        map(tuple((hour, colon, minute)), |(hour, _, minute)| {
+            Time::new(Some(hour), Some(minute))
+        }),
+        // <hour>時<minute>分
+        map(
+            tuple((hour, char('時'), minute, char('分'))),
+            |(hour, _, minute, _)| Time::new(Some(hour), Some(minute)),
+        ),
+        // <hour>時
+        map(tuple((hour, char('時'))), |(hour, _)| {
+            Time::new(Some(hour), Some(0))
+        }),
     ))(input)
 }
 

@@ -158,30 +158,26 @@ pub fn digits(input: &str) -> IResult<&str, u32> {
     alt((numeric_digits, complex_kanzi_digits, simple_kanzi_digits))(input)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::digits;
+#[test]
+fn test_digits_ok() {
+    // 単純な漢数字
+    assert_eq!(digits("二三九五"), Ok(("", 2395)));
+    assert_eq!(digits("一一〇"), Ok(("", 110)));
+    assert_eq!(digits("〇六四"), Ok(("六四", 0)));
 
-    #[test]
-    fn test_digits_ok() {
-        // 単純な漢数字
-        assert_eq!(digits("二三九五"), Ok(("", 2395)));
-        assert_eq!(digits("一一〇"), Ok(("", 110)));
-        assert_eq!(digits("〇六四"), Ok(("六四", 0)));
+    // 複雑な漢数字
+    assert_eq!(digits("二千十三"), Ok(("", 2013)));
+    assert_eq!(digits("千千二十三"), Ok(("千二十三", 1000)));
 
-        // 複雑な漢数字
-        assert_eq!(digits("二千十三"), Ok(("", 2013)));
-        assert_eq!(digits("千千二十三"), Ok(("千二十三", 1000)));
+    // アラビア数字
+    assert_eq!(digits("43892は"), Ok(("は", 43892)));
+    assert_eq!(digits("0293"), Ok(("", 293)));
+    assert_eq!(digits("0"), Ok(("", 0)));
+    assert_eq!(digits("11 16:30"), Ok((" 16:30", 11)));
+}
 
-        // アラビア数字
-        assert_eq!(digits("43892は"), Ok(("は", 43892)));
-        assert_eq!(digits("0293"), Ok(("", 293)));
-        assert_eq!(digits("0"), Ok(("", 0)));
-    }
-
-    #[test]
-    fn test_digits_err() {
-        // 先頭が数字でないならばエラー
-        assert!(digits("饅頭2390").is_err());
-    }
+#[test]
+fn test_digits_err() {
+    // 先頭が数字でないならばエラー
+    assert!(digits("饅頭2390").is_err());
 }

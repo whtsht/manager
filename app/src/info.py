@@ -104,10 +104,10 @@ class Plan(db.Model):
         title: str,
         line_id: str,
         detail: Optional[str],
-        notif_time: StrictDateTime,
-        allday: Optional[StrictDateTime],
-        start_time: Optional[StrictDateTime],
-        end_time: Optional[StrictDateTime],
+        notif_time: datetime,
+        allday: Optional[datetime],
+        start_time: Optional[datetime],
+        end_time: Optional[datetime],
     ):
         """予定情報
         Args:
@@ -129,10 +129,10 @@ class Plan(db.Model):
         self.line_id = line_id
         self.title = title
         self.detail = detail
-        self.notif_time = notif_time.into()
-        self.allday = into_datatime(allday)
-        self.start_time = into_datatime(start_time)
-        self.end_time = into_datatime(end_time)
+        self.notif_time = notif_time
+        self.allday = allday
+        self.start_time = start_time
+        self.end_time = end_time
 
 
 def get_start_time(plan: Plan) -> datetime:
@@ -305,4 +305,41 @@ def new_plan(
     Returns:
         Plan: 予定情報
     """
-    return Plan(title, line_id, None, notif_time, None, start_time, None)
+    return new_plan_detail(title, line_id, None, notif_time, None, start_time, None)
+
+
+def new_plan_detail(
+    title: str,
+    line_id: str,
+    detail: Optional[str],
+    notif_time: StrictDateTime,
+    allday: Optional[StrictDateTime],
+    start_time: Optional[StrictDateTime],
+    end_time: Optional[StrictDateTime],
+) -> Plan:
+    """予定情報
+    Args:
+        title (str):
+            予定名
+        line_id (str):
+            LineID
+        detail (Optional[str]):
+            詳細
+        notif_time (StrictDateTime):
+            通知時間
+        allday (Optional[StrictDateTime]):
+            終日
+        start_time (Optional[StrictDateTime]):
+            開始時刻
+        end_time (Optional[StrictDateTime]):
+            終了時刻
+    """
+    return Plan(
+        line_id,
+        title,
+        detail,
+        notif_time.into(),
+        into_datatime(allday),
+        into_datatime(start_time),
+        into_datatime(end_time),
+    )

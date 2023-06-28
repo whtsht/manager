@@ -42,6 +42,12 @@ def input_info_from_dict(obj) -> InputInfo:
 
 
 def analyze_message(input: str) -> InputInfo:
-    analyzer = subprocess.Popen(["analyzer", input], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    analyzer = subprocess.Popen(
+        ["analyzer", input],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
     response, _ = analyzer.communicate()
     return input_info_from_dict(json.loads(response))

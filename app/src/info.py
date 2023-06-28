@@ -131,7 +131,7 @@ class Plan(db.Model):
             self.id = id
         self.line_id = line_id
         self.title = title
-        self.detail = detail
+        self.detail = detail or ""
         self.notif_time = notif_time
         self.allday = allday
         self.start_time = start_time
@@ -300,8 +300,8 @@ def new_plan_detail(
             終了時刻
     """
     return Plan(
-        line_id,
         title,
+        line_id,
         detail,
         notif_time.into(),
         into_datatime(allday),

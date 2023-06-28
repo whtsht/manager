@@ -1,5 +1,6 @@
 from server import Mode, create_app
 from info import db, Plan
+from plan.notify import sched
 import json
 import pytest
 
@@ -22,6 +23,11 @@ def session():
     # テーブル内のデータを全て削除
     db.session.query(Plan).delete()
     db.session.commit()
+
+    # スケジュールを全て削除
+    jobs = sched.get_jobs()
+    for job in jobs:
+        job.remove()
 
 
 @pytest.fixture()

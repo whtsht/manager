@@ -23,7 +23,7 @@ def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchError:
 
     # タイトルのみ
     if plan_info.title is not None and plan_info.start_time.date.day is None:
-        plans = Plan.query.filter(Plan).filter(Plan.title == plan_info.title).all()
+        plans = Plan.query.filter(Plan.title == plan_info.title).all()
         if len(plans) == 0:
             return SearchError.NotFound
         else:
@@ -81,7 +81,12 @@ def completed_message(_: PlanInfo, plan_list: list[Plan]) -> str:
     """
     mes = "予定が見つかりました。\n"
 
-    for i in range(len(plan_list)):
-        mes += plan_list[i].title + "\n"
-        mes += str(plan_list[i].start_time or plan_list[i].allday) + "\n\n"
+    for i in range(len(plan_list) - 1):
+        mes += "タイトル: " + plan_list[i].title + "\n"
+        mes += "開始時刻: " + str(plan_list[i].start_time or plan_list[i].allday) + "\n\n"
+
+    last = len(plan_list) - 1
+    mes += "タイトル: " + plan_list[last].title + "\n"
+    mes += "開始時刻: " + str(plan_list[last].start_time or plan_list[last].allday)
+
     return mes

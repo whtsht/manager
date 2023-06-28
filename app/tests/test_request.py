@@ -58,3 +58,42 @@ def test_add_plan(client):
     assert len(plans) == 1
     assert plans[0].title == "タイトル"
     assert plans[0].notif_time.hour == 13
+
+
+def test_modify_plan(client):
+    client.post(
+        "/web/add_plan/",
+        json={
+            "plan": {
+                "title": "タイトル",
+                "detail": "詳細",
+                "lineID": mockLineID,
+                "notifTime": "2023/03/03T13:33",
+                "allDay": "2023/03/03T13:33",
+                "start": None,
+                "end": None,
+            },
+        },
+    )
+
+    plans = Plan.query.all()
+    client.post(
+        "/web/modify_plan/",
+        json={
+            "plan": {
+                "id": plans[0].id,
+                "title": "タイトル2",
+                "detail": "詳細2",
+                "lineID": mockLineID,
+                "notifTime": "2023/03/03T13:33",
+                "allDay": None,
+                "start": "2023/03/03T13:33",
+                "end": "2023/03/03T13:33",
+            },
+        },
+    )
+
+    plans = Plan.query.all()
+    assert len(plans) == 1
+    assert plans[0].title == "タイトル2"
+    assert plans[0].allday == None

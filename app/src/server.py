@@ -23,13 +23,16 @@ def create_app(mode: Mode):
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
     else:
         logging.basicConfig(level=logging.ERROR)
-        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////app/data.db"
 
     app.register_blueprint(web)
     app.register_blueprint(line)
     with app.app_context():
         db.init_app(app)
-        db.create_all()
+        try:
+            db.create_all()
+        except:
+            pass
     return app
 
 

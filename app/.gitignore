@@ -3,3 +3,4 @@ __pycache__/
 instance
 
 src/secret.py
+data.db

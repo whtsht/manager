@@ -1,0 +1,33 @@
+services:
+  app:
+    container_name: app-server
+    hostname: app-server-host
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    restart: always
+    tty: true
+    init: true
+    volumes:
+      - ./app/data.db:/app/data.db
+      - /var/unidic:/var/unidic
+    networks:
+      - network
+
+  proxy:
+    container_name: proxy-server
+    hostname: proxy-server-host
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8080:80
+    tty: true
+    init: true
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge

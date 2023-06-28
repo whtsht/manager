@@ -1,5 +1,5 @@
 """
-Dedigner: 小田桐光佑
+Dedigner: 小田桐光佑, 東間日向
 Date: 2023/6/27
 Purpose:通知処理を行う関数
 """
@@ -9,8 +9,12 @@ from linebot import LineBotApi
 from info import Plan
 from src.secret import CHANNEL_ACCESS_TOKEN
 from datetime import timedelta
-from line import push_buttons_message
-from line import push_text_message
+from linebot.models import (
+    ButtonsTemplate,
+    TextSendMessage,
+    MessageAction,
+    TemplateSendMessage,
+)
 
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 
@@ -51,7 +55,7 @@ def add_notification(line_id: str, plan: Plan):
     )
 
 
-def cancel_notification(line_id: str, title: str, date: datetime):
+def cancel_notification(plan: Plan):
     """ジョブリストから通知処理通知を削除:M22
 
     Args:
@@ -59,8 +63,9 @@ def cancel_notification(line_id: str, title: str, date: datetime):
         title (str): タイトル
         date (datetime): 日付
     """
+    start_time = plan.start_time or plan.allday
     sched.remove_job(
-        gen_id(line_id, title, date),
+        gen_id(plan.line_id, plan.title, start_time),  # type: ignore
     )
 
 
@@ -104,3 +109,35 @@ def send_notification(line_id: str, plan: Plan):
 
     # 予定を記録
     latest_plan[line_id] = plan
+
+
+def push_text_message(line_id: str, message: str):
+    """利用者のLineにメッセージを送信する
+
+    Args:
+        line_id (str): Line ID
+        message (str): メッセージ
+    """
+    line_bot_api.push_message(line_id, TextSendMessage(message))
+
+
+def push_buttons_message(line_id: str, title: str, message: str, buttons: list[str]):
+    """利用者にメッセージとボタンを送信する
+
+    Args:
+        line_id (str): Line ID
+        title (str): タイトル
+        message (str): メッセージ
+        buttons (list[str]): ボタンに表示するメッセージ
+    """
+    buttons_template_message = TemplateSendMessage(
+        alt_text=title,
+        template=ButtonsTemplate(
+            title=" " if len(title) == 0 else title,
+            text=" " if len(message) == 0 else message,
+            actions=map(
+                lambda button: MessageAction(label=button, text=button), buttons
+            ),
+        ),
+    )
+    line_bot_api.push_message(line_id, buttons_template_message)

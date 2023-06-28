@@ -10,10 +10,7 @@ from plan.main import main
 from linebot.models import (
     MessageEvent,
     TextMessage,
-    ButtonsTemplate,
     TextSendMessage,
-    MessageAction,
-    TemplateSendMessage,
 )
 from secret import (
     CHANNEL_ACCESS_TOKEN,
@@ -51,35 +48,3 @@ def callback():
 def handle_message(event):
     response = main(event.message.text, event.source.user_id)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response))
-
-
-def push_text_message(line_id: str, message: str):
-    """利用者のLineにメッセージを送信する
-
-    Args:
-        line_id (str): Line ID
-        message (str): メッセージ
-    """
-    line_bot_api.push_message(line_id, TextSendMessage(message))
-
-
-def push_buttons_message(line_id: str, title: str, message: str, buttons: list[str]):
-    """利用者にメッセージとボタンを送信する
-
-    Args:
-        line_id (str): Line ID
-        title (str): タイトル
-        message (str): メッセージ
-        buttons (list[str]): ボタンに表示するメッセージ
-    """
-    buttons_template_message = TemplateSendMessage(
-        alt_text="Buttons template",
-        template=ButtonsTemplate(
-            title=" " if len(title) == 0 else title,
-            text=" " if len(message) == 0 else message,
-            actions=map(
-                lambda button: MessageAction(label=button, text=button), buttons
-            ),
-        ),
-    )
-    line_bot_api.push_message(line_id, buttons_template_message)

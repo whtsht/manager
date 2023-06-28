@@ -8,6 +8,7 @@ from flask import request, jsonify
 from info import Plan, db
 from flask import Blueprint
 from datetime import datetime
+from plan import modify
 
 
 web = Blueprint("web", __name__, url_prefix="/web")
@@ -46,7 +47,16 @@ def from_json(data: dict[str, any]) -> Plan:  # type: ignore
     allday = to_datetime(data["allDay"])
     start_time = to_datetime(data["start"])
     end_time = to_datetime(data["end"])
-    return Plan(title, line_id, detail, notif_time, allday, start_time, end_time)
+    return Plan(
+        title,
+        line_id,
+        detail,
+        notif_time,
+        allday,
+        start_time,
+        end_time,
+        data["id"] if "id" in data else None,
+    )
 
 
 @web.route("/add_plan/", methods=["POST"])
@@ -64,16 +74,8 @@ def add_plan():
 def modify_plan():
     """M36 予定修正処理"""
     if data := request.json:
-        plan: Plan = data["plan"]
-        db_plan: Plan = Plan.query.filter_by(Plan.id == plan.id).first()
-        db_plan.title = plan.title
-        db_plan.detail = plan.detail
-        db_plan.notif_time = plan.notif_time
-        db_plan.allday = plan.allday
-        db_plan.start_time = plan.start_time
-        db_plan.end_time = plan.end_time
-        db.session.commit()
-
+        plan = from_json(data["plan"])
+        modify.modify_plan(plan)
     return "ok"
 
 

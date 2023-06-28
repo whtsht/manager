@@ -38,9 +38,10 @@ def to_datetime(value) -> datetime | None:
     return datetime.strptime(value, "%Y/%m/%dT%H:%M") if value is not None else None
 
 
-def from_json(line_id, data: dict[str, any]) -> Plan:  # type: ignore
+def from_json(data: dict[str, any]) -> Plan:  # type: ignore
     title = data["title"]
     detail = data["detail"]
+    line_id = data["lineID"]
     notif_time = datetime.strptime(data["notifTime"], "%Y/%m/%dT%H:%M")
     allday = to_datetime(data["allDay"])
     start_time = to_datetime(data["start"])
@@ -52,8 +53,7 @@ def from_json(line_id, data: dict[str, any]) -> Plan:  # type: ignore
 def add_plan():
     """M35 予定追加処理"""
     if data := request.json:
-        line_id = data["lineID"]
-        new_plan = from_json(line_id, data["plan"])
+        new_plan = from_json(data["plan"])
         db.session.add(new_plan)
         db.session.commit()
 

@@ -40,10 +40,10 @@ def test_add_plan(client):
     result = client.post(
         "/web/add_plan/",
         json={
-            "lineID": mockLineID,
             "plan": {
                 "title": "タイトル",
                 "detail": "詳細",
+                "lineID": mockLineID,
                 "notifTime": "2023/03/03T13:33",
                 "allDay": "2023/03/03T13:33",
                 "start": None,

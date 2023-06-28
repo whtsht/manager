@@ -4,10 +4,10 @@ Date:       2023/06/26
 Purpose:    予定検索
 """
 
-from info import PlanInfo, Plan, SearchError, SearchErrorType, get_start_time
+from info import PlanInfo, Plan, SearchError, get_start_time
 
 
-def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchErrorType:
+def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchError:
     """M31 予定検索処理 データベースから予定を検索
 
     Args:
@@ -19,13 +19,13 @@ def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchErrorType:
     """
     # タイトルも日付も指定されない．エラー
     if plan_info.title is None and plan_info.start_time.date.day is None:
-        return SearchErrorType.LackInfo
+        return SearchError.LackInfo
 
     # タイトルのみ
     if plan_info.title is not None and plan_info.start_time.date.day is None:
         plans = Plan.query.filter(Plan).filter(Plan.title == plan_info.title).all()
         if len(plans) == 0:
-            return SearchErrorType.NotFound
+            return SearchError.NotFound
         else:
             return plans
 
@@ -37,7 +37,7 @@ def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchErrorType:
             .all()
         )
         if len(plans) == 0:
-            return SearchErrorType.NotFound
+            return SearchError.NotFound
         else:
             return plans
 
@@ -49,7 +49,7 @@ def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchErrorType:
         .all()
     )
     if len(plans) == 0:
-        return SearchErrorType.NotFound
+        return SearchError.NotFound
     else:
         return plans
 
@@ -63,7 +63,7 @@ def uncompleted_message(error: SearchError) -> str:
     Returns:
         (str): エラーメッセージ
     """
-    if error.error_type == SearchErrorType.NotFound:
+    if error == SearchError.NotFound:
         return "予定を見つけることができませんでした。"
 
     return "予定のタイトル、日付のどちらかを入力して下さい。"

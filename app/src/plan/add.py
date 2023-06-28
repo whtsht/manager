@@ -12,13 +12,12 @@ from info import (
     db,
     Plan,
     new_plan,
-    AddErrorType,
     get_start_time,
 )
 from datetime import timedelta
 
 
-def from_message(lineID: str, plan_info: PlanInfo) -> Optional[AddErrorType]:
+def from_message(lineID: str, plan_info: PlanInfo) -> Optional[AddError]:
     """予定情報に不足がないか確認、通知時間を開始時刻の30分前に設定してM22を実行してNoneを返す。
 
     Args:
@@ -29,14 +28,14 @@ def from_message(lineID: str, plan_info: PlanInfo) -> Optional[AddErrorType]:
         Optional[AddErrorType]: 予定が追加できたか
     """
     if plan_info.title is None:
-        return AddErrorType.TitleNotSet
+        return AddError.TitleNotSet
     elif (
         plan_info.start_time.date.year is None
         or plan_info.start_time.date.month is None
         or plan_info.start_time.date.day is None
         or plan_info.start_time.time.hour is None
     ):
-        return AddErrorType.TimeNotSet
+        return AddError.TimeNotSet
     else:
         start_time = StrictDateTime(
             int(plan_info.start_time.date.year),
@@ -66,7 +65,7 @@ def from_message(lineID: str, plan_info: PlanInfo) -> Optional[AddErrorType]:
             # 予定追加成功
             return None
         else:
-            return AddErrorType.AlreadyExist
+            return AddError.AlreadyExist
 
 
 def add_plan(plan: Plan):
@@ -82,9 +81,9 @@ def uncompleted_message(error: AddError) -> str:
     """エラーメッセージを作成する
     Args: error: どのタイプのエラーか
     Returns: エラーメッセージ"""
-    if error.error_type == AddErrorType.AlreadyExist:
+    if error == AddError.AlreadyExist:
         return "その予定は既に追加されています"
-    if error.error_type == AddErrorType.TitleNotSet:
+    if error == AddError.TitleNotSet:
         return "タイトルが設定されていません"
 
     return "開始時間が設定されていません"

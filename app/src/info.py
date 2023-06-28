@@ -199,57 +199,19 @@ class InputInfo:
         return PlanInfo(self.title, self.start_time)
 
 
-class AddErrorType(Enum):
-    """追加処理エラータイプ"""
+class AddError(Enum):
+    """追加処理エラー"""
 
     AlreadyExist = 1
     TitleNotSet = 2
     TimeNotSet = 3
 
 
-class AddError:
-    """追加処理エラー情報
-
-    attributes:
-        error_type (AddErrorType):
-            エラータイプ
-        title      (Optional[str]):
-            タイトル
-        start_time (Optional[DateTime]):
-            開始時刻
-    """
-
-    def __init__(
-        self,
-        error_type: AddErrorType,
-        title: Optional[str] = None,
-        start_time: Optional[DateTime] = None,
-    ):
-        self.error_type = error_type
-        self.title = title
-        self.start_time = start_time
-
-
-class SearchErrorType(Enum):
-    """検索処理のエラータイプ"""
+class SearchError(Enum):
+    """検索処理のエラー"""
 
     NotFound = 1
     LackInfo = 2
-
-
-class SearchError:
-    """追加処理エラー情報
-
-    attributes:
-        error_type (SearchErrorType):
-            エラータイプ
-        title      (Optional[str]):
-            タイトル
-    """
-
-    def __init__(self, error_type: SearchErrorType, title: Optional[str] = None):
-        self.error_type = error_type
-        self.title = title
 
 
 class UserState:

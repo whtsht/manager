@@ -9,6 +9,7 @@ from info import Plan, db
 from flask import Blueprint
 from datetime import datetime
 from plan import modify
+from plan import remove
 
 
 web = Blueprint("web", __name__, url_prefix="/web")
@@ -84,6 +85,5 @@ def remove_plan():
     """M37 予定削除処理"""
     if data := request.json:
         plan_id = data["planID"]
-        Plan.query.filter_by(Plan.id == plan_id).delete()
-        db.session.commit()
+        remove.remove_plan(plan_id)
     return "ok"

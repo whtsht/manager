@@ -97,3 +97,31 @@ def test_modify_plan(client):
     assert len(plans) == 1
     assert plans[0].title == "タイトル2"
     assert plans[0].allday == None
+
+
+def test_remove_plan(client):
+    client.post(
+        "/web/add_plan/",
+        json={
+            "plan": {
+                "title": "タイトル",
+                "detail": "詳細",
+                "lineID": mockLineID,
+                "notifTime": "2023/03/03T13:33",
+                "allDay": "2023/03/03T13:33",
+                "start": None,
+                "end": None,
+            },
+        },
+    )
+
+    plans = Plan.query.all()
+    client.post(
+        "/web/remove_plan/",
+        json={
+            "planID": plans[0].id,
+        },
+    )
+
+    plans = Plan.query.all()
+    assert len(plans) == 0

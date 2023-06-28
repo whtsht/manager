@@ -6,6 +6,7 @@ Purpose     : Line SDK との連携
 from flask import request, abort, Blueprint
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
+from plan.main import main
 from linebot.models import (
     MessageEvent,
     TextMessage,
@@ -48,10 +49,8 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    response = event.message.text
-    id = event.source.user_id
-    # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response))
-    push_buttons_message(id, "XXXの時間です", "スヌーズしたい場合は時間を選んでください", ["5分", "10分", "15分"])
+    response = main(event.message.text, event.source.user_id)
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response))
 
 
 def push_text_message(line_id: str, message: str):

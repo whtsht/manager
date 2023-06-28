@@ -138,13 +138,13 @@ pub fn numeric_digits(input: &str) -> IResult<&str, u32> {
     map(
         many1(alt((ascii, map(upper, upper_to_digit)))),
         |v| match &v[..] {
-            ['0'] => 0,
+            v if v.iter().all(|&c| c == '0') => 0,
             v => v
                 .into_iter()
                 .skip_while(|&&c| c == '0')
                 .collect::<String>()
                 .parse()
-                .unwrap(),
+                .unwrap_or_default(),
         },
     )(input)
 }

@@ -8,6 +8,7 @@ from flask import request, jsonify
 from info import Plan, db
 from flask import Blueprint
 from datetime import datetime
+import json
 from plan import modify
 from plan import remove
 
@@ -30,14 +31,21 @@ def get_plan_list():
     """
     if data := request.json:
         line_id = data["lineID"]
-        plan_list = Plan.query.filter_by(Plan.line_id == line_id).all()
-        return jsonify(plan_list)
+        plan_list = Plan.query.filter(Plan.line_id == line_id).all()
+        return plan_list_stringify(plan_list)
     else:
-        return jsonify([])
+        return plan_list_stringify([])
 
 
 def to_datetime(value) -> datetime | None:
     return datetime.strptime(value, "%Y/%m/%dT%H:%M") if value is not None else None
+
+
+def time_stringify(value: datetime | None) -> str | None:
+    if value:
+        return value.strftime("%Y/%m/%dT%H:%M")
+    else:
+        return None
 
 
 def from_json(data: dict[str, any]) -> Plan:  # type: ignore
@@ -58,6 +66,23 @@ def from_json(data: dict[str, any]) -> Plan:  # type: ignore
         end_time,
         data["id"] if "id" in data else None,
     )
+
+
+def plan_list_stringify(plans: list[Plan]) -> str:
+    plans_json = map(
+        lambda plan: {
+            "id": plan.id,
+            "title": plan.title,
+            "lineID": plan.line_id,
+            "detail": plan.detail,
+            "notifTime": time_stringify(plan.notif_time),
+            "allDay": time_stringify(plan.allday),
+            "start": time_stringify(plan.start_time),
+            "end": time_stringify(plan.end_time),
+        },
+        plans,
+    )
+    return json.dumps(list(plans_json))
 
 
 @web.route("/add_plan/", methods=["POST"])

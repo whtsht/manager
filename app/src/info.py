@@ -108,6 +108,7 @@ class Plan(db.Model):
         allday: Optional[datetime],
         start_time: Optional[datetime],
         end_time: Optional[datetime],
+        id: Optional[int] = None,
     ):
         """予定情報
         Args:
@@ -126,6 +127,8 @@ class Plan(db.Model):
             end_time (Optional[StrictDateTime]):
                 終了時刻
         """
+        if id:
+            self.id = id
         self.line_id = line_id
         self.title = title
         self.detail = detail

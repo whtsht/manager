@@ -5,6 +5,7 @@ Purpose:    予定の削除処理
 """
 
 from info import Plan, db
+from plan.notify import cancel_notification
 
 
 def remove_plan(plan_id: str):
@@ -14,5 +15,6 @@ def remove_plan(plan_id: str):
     """
 
     plan = Plan.query.filter(Plan.id == int(plan_id)).first()
+    cancel_notification(plan)
     db.session.delete(plan)
     db.session.commit()

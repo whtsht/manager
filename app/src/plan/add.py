@@ -5,6 +5,7 @@ Purpose:
 """
 
 from typing import Optional
+from plan.notify import add_notification
 from info import (
     PlanInfo,
     AddError,
@@ -17,7 +18,7 @@ from info import (
 from datetime import timedelta
 
 
-def from_message(lineID: str, plan_info: PlanInfo) -> Optional[AddError]:
+def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
     """予定情報に不足がないか確認、通知時間を開始時刻の30分前に設定してM22を実行してNoneを返す。
 
     Args:
@@ -60,19 +61,22 @@ def from_message(lineID: str, plan_info: PlanInfo) -> Optional[AddError]:
                 notif_time.hour,
                 notif_time.minute,
             )
-            plan = new_plan(plan_info.title, lineID, notif_time, start_time)
-            add_plan(plan)
+            plan = new_plan(plan_info.title, line_id, notif_time, start_time)
+            add_plan(plan, line_id)
             # 予定追加成功
             return None
         else:
             return AddError.AlreadyExist
 
 
-def add_plan(plan: Plan):
+def add_plan(plan: Plan, line_id: str):
     """DBに予定を追加する
-    Args: plan: 予定の情報
-    Returns: なし
+    Args:
+        plan: 予定の情報
+        line_id: Line ID
     """
+    # 通知設定
+    add_notification(line_id, plan)
     db.session.add(plan)
     db.session.commit()
 
@@ -98,6 +102,12 @@ def complited_message(plan_info: PlanInfo) -> str:
     Returns:
         mes (str): 完了メッセージ
     """
-    mes = f"予定の追加が完了しました。タイトルは{plan_info.title}、開始時間は{plan_info.start_time}です。"
+    mes = (
+        "予定の追加が完了しました。"
+        + f"タイトルは{plan_info.title}、"
+        + f"開始時間は{plan_info.start_time.date.month}/{plan_info.start_time.date.day}"
+        + f" {plan_info.start_time.time.hour}:{plan_info.start_time.time.minute}"
+        + "です。"
+    )
 
     return mes

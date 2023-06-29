@@ -22,7 +22,7 @@ COPY --from=0 /app/target/release/analyzer /bin/analyzer
 COPY /app/src /app/src
 
 RUN pip install --upgrade pip \
-    && pip install flask line-bot-sdk Flask-SQLAlchemy Flask-APScheduler gunicorn
+    && pip install flask==2.3.2 line-bot-sdk==2.4.2 Flask-SQLAlchemy==3.0.5 Flask-APScheduler==1.12.4 gunicorn==20.1.0
 
 ENV PYTHONPATH $PYTHONPATH:/app/src
 

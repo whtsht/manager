@@ -66,6 +66,9 @@ def test_add_plan(client):
     assert plans[0].title == "タイトル"
     assert plans[0].notif_time.hour == 13
 
+    jobs = sched.get_jobs()
+    assert len(jobs) == 1
+
 
 def test_modify_plan(client):
     client.post(
@@ -132,6 +135,9 @@ def test_remove_plan(client):
 
     plans = Plan.query.all()
     assert len(plans) == 0
+
+    jobs = sched.get_jobs()
+    assert len(jobs) == 0
 
 
 def test_get_plan_list(client):

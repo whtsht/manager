@@ -62,21 +62,21 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
                 notif_time.minute,
             )
             plan = new_plan(plan_info.title, line_id, notif_time, start_time)
-            add_plan(plan, line_id)
+            add_plan(plan)
             # 予定追加成功
             return None
         else:
             return AddError.AlreadyExist
 
 
-def add_plan(plan: Plan, line_id: str):
+def add_plan(plan: Plan):
     """DBに予定を追加する
     Args:
         plan: 予定の情報
         line_id: Line ID
     """
     # 通知設定
-    add_notification(line_id, plan)
+    add_notification(plan)
     db.session.add(plan)
     db.session.commit()
 

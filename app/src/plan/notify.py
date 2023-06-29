@@ -37,7 +37,7 @@ def gen_id(line_id: str, title: str, date: datetime) -> str:
     return line_id + "_" + title + "_" + str(date)
 
 
-def add_notification(line_id: str, plan: Plan):
+def add_notification(plan: Plan):
     """予定通知処理をジョブリストに追加:M21
         start_timeかalldayのどちらか必ず値が入っている
 
@@ -46,6 +46,7 @@ def add_notification(line_id: str, plan: Plan):
         plan (Plan): プラン
     """
     start_time = plan.start_time or plan.allday
+    line_id = plan.line_id
     sched.add_job(
         gen_id(line_id, plan.title, start_time),  # type: ignore
         send_notification,
@@ -89,7 +90,7 @@ def snooze(line_id: str, after: int):
 
         if snooze_time < start_time:  # type: ignore
             plan.notif_time = snooze_time
-            add_notification(line_id, plan)
+            add_notification(plan)
         else:
             push_text_message(line_id, "予定が古すぎます。")
     else:

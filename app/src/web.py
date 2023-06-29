@@ -9,8 +9,7 @@ from info import Plan, db
 from flask import Blueprint
 from datetime import datetime
 import json
-from plan import modify
-from plan import remove
+from plan import modify, remove, add
 
 
 web = Blueprint("web", __name__, url_prefix="/web")
@@ -90,8 +89,7 @@ def add_plan():
     """M35 予定追加処理"""
     if data := request.json:
         new_plan = from_json(data["plan"])
-        db.session.add(new_plan)
-        db.session.commit()
+        add.add_plan(new_plan)
 
     return "ok"
 

@@ -8,6 +8,7 @@ from enum import Enum
 from web import web
 from info import db
 from line import line
+from plan.notify import sched
 import logging
 
 
@@ -29,6 +30,7 @@ def create_app(mode: Mode):
     app.register_blueprint(line)
     with app.app_context():
         db.init_app(app)
+        sched.init_app(app)
         try:
             db.create_all()
         except:

@@ -23,18 +23,23 @@ def create_app(mode: Mode):
         logging.basicConfig(level=logging.INFO)
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
     else:
-        logging.basicConfig(level=logging.ERROR)
+        # logging.basicConfig(level=logging.ERROR)
+        logging.basicConfig(level=logging.INFO)
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////app/data.db"
 
     app.register_blueprint(web)
     app.register_blueprint(line)
     with app.app_context():
         db.init_app(app)
-        sched.init_app(app)
         try:
             db.create_all()
         except:
             pass
+
+    app.config["SCHEDULER_TIMEZONE"] = "Asia/Tokyo"
+    sched.init_app(app)
+    sched.start()
+
     return app
 
 

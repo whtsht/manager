@@ -5,7 +5,7 @@ Purpose:
 """
 
 from typing import Optional
-from plan.notify import add_notification
+from plan.notify import NotifPlan, add_notification
 from info import (
     PlanInfo,
     AddError,
@@ -76,7 +76,8 @@ def add_plan(plan: Plan):
         line_id: Line ID
     """
     # 通知設定
-    add_notification(plan)
+    start_time = plan.start_time or plan.allday
+    add_notification(NotifPlan(plan.line_id, plan.title, start_time, plan.notif_time))  # type: ignore
     db.session.add(plan)
     db.session.commit()
 

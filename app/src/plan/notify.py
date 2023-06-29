@@ -57,8 +57,13 @@ def add_notification(plan: NotifPlan):
         line_id (str): lineID
         plan (Plan): プラン
     """
-    start_time = plan.start_time
+    global latest_plan
     line_id = plan.line_id
+
+    # 予定を記録
+    latest_plan[line_id] = plan
+
+    start_time = plan.start_time
     # 30分前
     sched.add_job(
         gen_id(line_id, plan.title, start_time),  # type: ignore
@@ -86,13 +91,18 @@ def cancel_notification(plan: Plan):
         title (str): タイトル
         date (datetime): 日付
     """
+    global latest_plan
+    line_id = plan.line_id
+    if line_id in latest_plan.keys():
+        del latest_plan[line_id]
+
     start_time = plan.start_time or plan.allday
     sched.remove_job(
         gen_id(plan.line_id, plan.title, start_time),  # type: ignore
     )
 
 
-def snooze(line_id: str, after: int):
+def snooze(line_id: str, after: int) -> str:
     """利用者がスヌーズを押した場合,latest_planから最新の予定を取得し,5/10/30/分後に通知する
          その予定の開始時刻から30分以上経過している場合は,予定が古すぎることを知らせる:M23
 
@@ -100,7 +110,9 @@ def snooze(line_id: str, after: int):
         line_id (str): lineID
         after (int): after分後に通知
     """
-    if line_id in latest_plan:
+    global latest_plan
+
+    if line_id in latest_plan.keys():
         plan = latest_plan[line_id]
         start_time = plan.start_time
         current_time = datetime.now()
@@ -109,10 +121,14 @@ def snooze(line_id: str, after: int):
         if snooze_time < start_time:  # type: ignore
             plan.notif_time = snooze_time
             add_notification(plan)
+            # push_text_message(line_id, "スヌーズします")
+            return "スヌーズします"
         else:
-            push_text_message(line_id, "予定が古すぎます。")
+            # push_text_message(line_id, "予定が古すぎます。")
+            return "予定が古すぎます。"
     else:
-        push_text_message(line_id, "該当する予定が見つかりません。")
+        # push_text_message(line_id, "該当する予定が見つかりません。")
+        return "該当する予定が見つかりません。"
 
 
 def send_notification(plan: NotifPlan):
@@ -124,11 +140,11 @@ def send_notification(plan: NotifPlan):
     """
     line_id = plan.line_id
     push_buttons_message(
-        line_id, plan.title + "の時間です", "何分後にスヌーズを設定するのか押してください", ["5分", "10分", "15分"]
+        line_id,
+        plan.title + "の時間です",
+        "何分後にスヌーズを設定するのか押してください",
+        ["5分 スヌーズ", "10分 スヌーズ", "15分 スヌーズ"],
     )
-
-    # 予定を記録
-    latest_plan[line_id] = plan
 
 
 def push_text_message(line_id: str, message: str):

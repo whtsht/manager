@@ -6,11 +6,20 @@ Purpose:    対話処理の状態管理，制御関数群
 from info import InputInfo, Plan, UserState, OP, SearchError
 from analyzer import analyze_message
 from plan import add, search
+from plan.notify import snooze
+
 
 status: dict[str, UserState] = {}
 
 
 def main(message: str, line_id: str) -> str:
+    if message == "5分 スヌーズ":
+        return snooze(line_id, 1)
+    if message == "10分 スヌーズ":
+        return snooze(line_id, 1)
+    if message == "15分 スヌーズ":
+        return snooze(line_id, 1)
+
     input_info = analyze_message(message)
     input_info = integrate_input(line_id, input_info)
     if input_info.op == OP.Add:

@@ -1,5 +1,5 @@
 """
-Dedigner: 小田桐光佑, 東間日向
+Designer: 小田桐光佑, 東間日向
 Date: 2023/6/27
 Purpose:通知処理を行う関数
 """
@@ -23,6 +23,11 @@ sched = APScheduler()
 
 
 class NotifPlan:
+    """通知する予定を保持する
+    Planをそのまま保持すると，send_notificationを呼び出したとき，
+    SQLのセッション切れによってエラーがでる．それを回避するためのクラス
+    """
+
     def __init__(
         self, line_id: str, title: str, start_time: datetime, notif_time: datetime
     ):
@@ -121,13 +126,10 @@ def snooze(line_id: str, after: int) -> str:
         if snooze_time < start_time:  # type: ignore
             plan.notif_time = snooze_time
             add_notification(plan)
-            # push_text_message(line_id, "スヌーズします")
             return "スヌーズします"
         else:
-            # push_text_message(line_id, "予定が古すぎます。")
             return "予定が古すぎます。"
     else:
-        # push_text_message(line_id, "該当する予定が見つかりません。")
         return "該当する予定が見つかりません。"
 
 
@@ -135,8 +137,7 @@ def send_notification(plan: NotifPlan):
     """利用者に予定の通知を行う:M24
 
     Args:
-        line_id (str): lineID
-        plan (Plan): プラン
+        plan (NotifPlan): プラン
     """
     line_id = plan.line_id
     push_buttons_message(

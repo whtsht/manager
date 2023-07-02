@@ -45,7 +45,7 @@ pub fn get_title_and_op(
         && hint.iter().filter(|w| add_word(w)).count() == 0
     {
         return (
-            Some(noun.into_iter().filter(cond).collect()).and_then(check_empty),
+            Some(hint.into_iter().filter(cond).collect()).and_then(check_empty),
             Some(Operation::Search),
         );
     }
@@ -53,7 +53,7 @@ pub fn get_title_and_op(
     for op in noun.iter().chain(verb.iter()) {
         if search_word(&op) {
             return (
-                Some(noun.into_iter().filter(cond).collect()).and_then(check_empty),
+                Some(hint.into_iter().filter(cond).collect()).and_then(check_empty),
                 Some(Operation::Search),
             );
         }

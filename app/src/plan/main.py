@@ -14,11 +14,11 @@ status: dict[str, UserState] = {}
 
 def main(message: str, line_id: str) -> str:
     if message == "5分 スヌーズ":
-        return snooze(line_id, 1)
+        return snooze(line_id, 5)
     if message == "10分 スヌーズ":
-        return snooze(line_id, 1)
+        return snooze(line_id, 10)
     if message == "15分 スヌーズ":
-        return snooze(line_id, 1)
+        return snooze(line_id, 15)
 
     input_info = analyze_message(message)
     input_info = integrate_input(line_id, input_info)

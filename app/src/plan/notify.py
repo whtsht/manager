@@ -3,13 +3,13 @@ Designer: 小田桐光佑, 東間日向
 Date: 2023/6/27
 Purpose:通知処理を行う関数
 """
-from flask import current_app
 from flask_apscheduler import APScheduler
 from datetime import datetime
 from linebot import LineBotApi
-from info import Plan
+from info import Plan, get_start_time
 from src.secret import CHANNEL_ACCESS_TOKEN
 from datetime import timedelta, datetime
+from typing import cast
 from linebot.models import (
     ButtonsTemplate,
     TextSendMessage,
@@ -37,10 +37,6 @@ class NotifPlan:
         self.notif_time = notif_time
 
 
-# lineID => 予定を検索
-latest_plan: dict[str, NotifPlan] = {}
-
-
 def gen_id(line_id: str, title: str, date: datetime) -> str:
     """ジョブに対して唯一のIDを生成する:M20
 
@@ -54,56 +50,40 @@ def gen_id(line_id: str, title: str, date: datetime) -> str:
     return line_id + "_" + title + "_" + str(date)
 
 
+def from_plan(plan: Plan) -> NotifPlan:
+    return NotifPlan(
+        plan.line_id,
+        plan.title,
+        cast(datetime, plan.allday or plan.start_time),
+        plan.notif_time,
+    )
+
+
 def add_notification(plan: NotifPlan):
     """予定通知処理をジョブリストに追加:M21
         start_timeかalldayのどちらか必ず値が入っている
 
     Args:
-        line_id (str): lineID
-        plan (Plan): プラン
+        plan (NofifPlan): 予定
     """
-    global latest_plan
-    line_id = plan.line_id
-
-    # 予定を記録
-    latest_plan[line_id] = plan
-
-    start_time = plan.start_time
-    # 30分前
     sched.add_job(
-        gen_id(line_id, plan.title, start_time),  # type: ignore
+        gen_id(plan.line_id, plan.title, plan.start_time),
         send_notification,
         trigger="date",
         run_date=plan.notif_time,
-        args=[plan],
+        args=[NotifPlan(plan.line_id, plan.title, plan.start_time, plan.notif_time)],
     )
-    # 0分前
-    sched.add_job(
-        gen_id("_" + line_id, plan.title, start_time),  # type: ignore
-        send_notification,
-        trigger="date",
-        run_date=start_time,
-        args=[plan],
-    )
-    current_app.logger.info(f"Add Task {plan.title}")  # type: ignore
 
 
 def cancel_notification(plan: Plan):
     """ジョブリストから通知処理通知を削除:M22
 
     Args:
-        line_id (str): lineID
-        title (str): タイトル
-        date (datetime): 日付
+        plan: (Plan): 予定
     """
-    global latest_plan
-    line_id = plan.line_id
-    if line_id in latest_plan.keys():
-        del latest_plan[line_id]
-
-    start_time = plan.start_time or plan.allday
+    start_time = cast(datetime, plan.start_time and plan.allday)
     sched.remove_job(
-        gen_id(plan.line_id, plan.title, start_time),  # type: ignore
+        gen_id(plan.line_id, plan.title, start_time),
     )
 
 
@@ -115,22 +95,30 @@ def snooze(line_id: str, after: int) -> str:
         line_id (str): lineID
         after (int): after分後に通知
     """
-    global latest_plan
-
-    if line_id in latest_plan.keys():
-        plan = latest_plan[line_id]
-        start_time = plan.start_time
-        current_time = datetime.now()
-        snooze_time = current_time + timedelta(minutes=after)
-
-        if snooze_time < start_time:  # type: ignore
-            plan.notif_time = snooze_time
-            add_notification(plan)
-            return "スヌーズします"
-        else:
-            return "予定が古すぎます。"
-    else:
+    now = datetime.utcnow() + timedelta(hours=9)
+    plans: list[Plan] = Plan.query.filter(Plan.line_id == line_id).all()
+    plans = list(
+        filter(
+            lambda plan: get_start_time(plan).date() == now.date(),
+            plans,
+        )
+    )
+    if len(plans) == 0:
         return "該当する予定が見つかりません。"
+    else:
+        # TODO
+        # 現在時刻に最も近い予定を取得する
+        plan: Plan = plans[0]
+
+        ids = list(map(lambda job: job.id, sched.get_jobs()))
+        start_time = cast(datetime, plan.start_time or plan.allday)
+        if gen_id(plan.line_id, plan.title, start_time) in ids:
+            return f"既に設定されています"
+        else:
+            n_plan: NotifPlan = from_plan(plan)
+            n_plan.notif_time = now + timedelta(minutes=after)
+            add_notification(n_plan)
+            return f"{after}分後にスヌーズします"
 
 
 def send_notification(plan: NotifPlan):

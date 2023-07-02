@@ -4,8 +4,8 @@ Date: 2023/6/20
 Purpose: 
 """
 
-from typing import Optional
-from plan.notify import NotifPlan, add_notification
+from typing import Optional, cast
+from plan.notify import NotifPlan, add_notification, sched
 from info import (
     PlanInfo,
     AddError,
@@ -15,7 +15,7 @@ from info import (
     new_plan,
     get_start_time,
 )
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 
 def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
@@ -53,7 +53,7 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
             is None
         ):
             notif_time = start_time.into()
-            notif_time -= timedelta(minutes=30)
+            # notif_time -= timedelta(minutes=30)
             notif_time = StrictDateTime(
                 notif_time.year,
                 notif_time.month,
@@ -76,8 +76,15 @@ def add_plan(plan: Plan):
         line_id: Line ID
     """
     # 通知設定
-    start_time = plan.start_time or plan.allday
-    add_notification(NotifPlan(plan.line_id, plan.title, start_time, plan.notif_time))  # type: ignore
+
+    add_notification(
+        NotifPlan(
+            plan.line_id,
+            plan.title,
+            cast(datetime, plan.allday or plan.start_time),
+            plan.notif_time,
+        )
+    )
     db.session.add(plan)
     db.session.commit()
 

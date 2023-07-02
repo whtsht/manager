@@ -4,7 +4,7 @@ Date:       2023/06/26
 Purpose:    予定検索
 """
 
-from info import PlanInfo, Plan, SearchError, get_start_time
+from info import PlanInfo, Plan, SearchError
 
 
 def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchError:
@@ -31,10 +31,19 @@ def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchError:
 
     # 日付のみ
     if plan_info.title is None and plan_info.start_time.date.day is not None:
-        plans = (
-            Plan.query.filter(Plan)
-            .filter(get_start_time(Plan).day == plan_info.start_time.date.day)
-            .all()
+        plans: list[Plan] = Plan.query.all()
+        plans = list(
+            filter(
+                lambda plan: (
+                    plan.allday is not None
+                    and plan.allday.day == plan_info.start_time.date.day
+                )
+                or (
+                    plan.start_time is not None
+                    and plan.start_time.day == plan_info.start_time.date.day
+                ),
+                plans,
+            )
         )
         if len(plans) == 0:
             return SearchError.NotFound
@@ -42,11 +51,20 @@ def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchError:
             return plans
 
     # 両方指定されている
-    plans = (
-        Plan.query.filter(Plan)
-        .filter(Plan.title == plan_info.title)
-        .filter(get_start_time(Plan).day == plan_info.start_time.date.day)
-        .all()
+
+    plans: list[Plan] = Plan.query.filter(Plan.title == plan_info.title).all()
+    plans = list(
+        filter(
+            lambda plan: (
+                plan.allday is not None
+                and plan.allday.day == plan_info.start_time.date.day
+            )
+            or (
+                plan.start_time is not None
+                and plan.start_time.day == plan_info.start_time.date.day
+            ),
+            plans,
+        )
     )
     if len(plans) == 0:
         return SearchError.NotFound

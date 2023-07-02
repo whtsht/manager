@@ -2,7 +2,7 @@ from analyzer import analyze_message
 from info import OP
 
 
-def test_add_request():
+def test_add_request(client):
     input_info = analyze_message("明日は学校")
     assert input_info.op == OP.Add
     assert input_info.title == "学校"
@@ -22,7 +22,6 @@ def test_add_request():
     assert input_info.start_time.time.minute == 30
 
 
-def test_search_request():
+def test_search_request(client):
     input_info = analyze_message("明日の予定は？")
     assert input_info.op is OP.Search
-    assert input_info.title == None

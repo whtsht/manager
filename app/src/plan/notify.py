@@ -81,7 +81,7 @@ def cancel_notification(plan: Plan):
     Args:
         plan: (Plan): 予定
     """
-    start_time = cast(datetime, plan.start_time and plan.allday)
+    start_time = cast(datetime, plan.start_time or plan.allday)
     sched.remove_job(
         gen_id(plan.line_id, plan.title, start_time),
     )

@@ -5,7 +5,7 @@ Purpose:
 """
 
 from typing import Optional, cast
-from plan.notify import NotifPlan, add_notification, sched
+from plan.notify import NotifPlan, add_notification
 from info import (
     PlanInfo,
     AddError,
@@ -15,7 +15,7 @@ from info import (
     new_plan,
     get_start_time,
 )
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:

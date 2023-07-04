@@ -87,7 +87,7 @@ def uncompleted_message(error: SearchError) -> str:
     return "予定のタイトル、日付のどちらかを入力して下さい。"
 
 
-def completed_message(_: PlanInfo, plan_list: list[Plan]) -> str:
+def completed_message(plan_list: list[Plan]) -> str:
     """M33 予定送信処理 検索された予定の情報を知らせる
 
     Args:

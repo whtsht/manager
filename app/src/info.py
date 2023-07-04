@@ -38,6 +38,20 @@ class DateTime:
         self.date = date
         self.time = time
 
+    def into(self) -> datetime | None:
+        if (
+            self.date.year is not None
+            and self.date.month is not None
+            and self.date.day is not None
+        ):
+            return datetime(
+                self.date.year,
+                self.date.month,
+                self.date.day,
+                self.time.hour or 0,
+                self.time.minute or 0,
+            )
+
 
 class StrictDateTime:
     """厳密な時刻情報を格納する
@@ -63,13 +77,7 @@ class StrictDateTime:
         Returns:
             datetime
         """
-        return datetime(
-            self.year,
-            self.month,
-            self.day,
-            self.hour,
-            0 if self.minute == None else self.minute,
-        )
+        return datetime(self.year, self.month, self.day, self.hour, self.minute or 0)
 
 
 # データベースのインスタンス
@@ -77,7 +85,7 @@ db = SQLAlchemy()
 
 
 class Plan(db.Model):
-    """F1 予定情報を格納する
+    """F1 予定情報
     Attributes:
         id: 予定ID
         line_id: LineID
@@ -89,7 +97,6 @@ class Plan(db.Model):
         end_time: 終了時刻
     """
 
-    __tablename__ = "plans"
     id: int = db.Column(db.Integer, primary_key=True)
     line_id: str = db.Column(db.String(50), nullable=False)
     title: str = db.Column(db.String(100), nullable=False)
@@ -214,38 +221,73 @@ class SearchError(Enum):
     LackInfo = 2
 
 
-class UserState:
-    """利用者の入力情報を表す
+class UserState(db.Model):
+    """F2 利用者状態
     Attributes:
-        op (OP):
-            操作
-        completed (bool):
-            処理が完了したかどうか
-        plan_info (PlanInfo):
-            予定情報
-        plan_list (Optional[list[Plan]]):
-            検索した予定のリスト．追加操作では使わない
-        add_error (Optional[AddError]):
-            予定追加のエラー
-        search_error (Optional[SearchError]):
-            予定検索のエラー
+        line_id: LineID
+        op: 操作名
+        completed: 操作完了
+        title: 予定名
+        start_time: 開始時刻
+        add_error: 予定追加エラー
+        search_error: 予定検索エラー
     """
+
+    line_id: str = db.Column(db.String(50), primary_key=True)
+    op: str = db.Column(db.String(20), nullable=False)
+    completed: bool = db.Column(db.Boolean, nullable=False)
+    title: Optional[str] = db.Column(db.String(100), nullable=True)
+    year: Optional[int] = db.Column(db.Integer, nullable=True)
+    month: Optional[int] = db.Column(db.Integer, nullable=True)
+    day: Optional[int] = db.Column(db.Integer, nullable=True)
+    hour: Optional[int] = db.Column(db.Integer, nullable=True)
+    minute: Optional[int] = db.Column(db.Integer, nullable=True)
+    add_error: Optional[str] = db.Column(db.String(20), nullable=True)
+    search_error: Optional[str] = db.Column(db.String(20), nullable=True)
 
     def __init__(
         self,
-        op: OP,
+        line_id: str,
+        op: str,
         completed: bool,
-        plan_info: PlanInfo,
-        plan_list: Optional[list[Plan]],
-        add_error: Optional[AddError],
-        search_error: Optional[SearchError],
+        title: Optional[str],
+        year: Optional[int],
+        month: Optional[int],
+        day: Optional[int],
+        hour: Optional[int],
+        minute: Optional[int],
+        add_error: Optional[str],
+        search_error: Optional[str],
     ):
+        self.line_id = line_id
         self.op = op
         self.completed = completed
-        self.plan_info = plan_info
-        self.plan_list = plan_list
+        self.title = title
+        self.year = year
+        self.month = month
+        self.day = day
+        self.hour = hour
+        self.minute = minute
         self.add_error = add_error
         self.search_error = search_error
+
+
+class PlanList(db.Model):
+    """F3 予定リスト
+
+    Attributes:
+        id: 予定リスト ID
+        line_id: Line ID
+        plan_id: 予定 ID
+    """
+
+    id: int = db.Column(db.Integer, primary_key=True)
+    line_id: str = db.Column(db.String(50), nullable=False)
+    plan_id: int = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, line_id: str, plan_id: int):
+        self.line_id = line_id
+        self.plan_id = plan_id
 
 
 def into_datatime(time: Optional[StrictDateTime]) -> Optional[datetime]:

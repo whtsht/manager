@@ -15,7 +15,7 @@ from info import (
     new_plan,
     get_start_time,
 )
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 
 def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:

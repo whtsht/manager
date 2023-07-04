@@ -212,6 +212,8 @@ class AddError(Enum):
     AlreadyExist = 1
     TitleNotSet = 2
     TimeNotSet = 3
+    DateNotSet = 4
+    DateTimeNotSet = 5
 
 
 class SearchError(Enum):

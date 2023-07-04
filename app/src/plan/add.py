@@ -36,7 +36,14 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
         or plan_info.start_time.date.day is None
         or plan_info.start_time.time.hour is None
     ):
+        return AddError.DateTimeNotSet
+    elif (plan_info.start_time.time.hour is None):
         return AddError.TimeNotSet
+    elif (
+        plan_info.start_time.date.month is None
+        or plan_info.start_time.date.day is None
+    ):
+        return AddError.DateNotSet
     else:
         start_time = StrictDateTime(
             int(plan_info.start_time.date.year),
@@ -97,8 +104,11 @@ def uncompleted_message(error: AddError) -> str:
         return "その予定は既に追加されています"
     if error == AddError.TitleNotSet:
         return "タイトルが設定されていません"
-
-    return "開始時間が設定されていません"
+    if error == AddError.TimeNotSet:
+        return "開始時刻が設定されていません"
+    if error == AddError.DateNotSet:
+        return "開始日時が設定されていません"
+    return "month/day/timeに「title」と入力して下さい"
 
 
 def complited_message(plan_info: PlanInfo) -> str:

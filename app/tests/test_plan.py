@@ -51,3 +51,8 @@ def test_search_plan(client):
 
     result = main("予定検索 遊び 2099/03/04", mockLineID)
     assert result == "予定を見つけることができませんでした。"
+
+
+def test_search_err(client):
+    result = main("検索", mockLineID)
+    assert result == "予定のタイトル、日付のどちらかを入力して下さい。"

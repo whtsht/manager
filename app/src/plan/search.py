@@ -4,10 +4,10 @@ Date:       2023/06/26
 Purpose:    予定検索
 """
 
-from info import PlanInfo, Plan, SearchError
+from info import PlanInfo, Plan, SearchError, get_start_time
 
 
-def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchError:
+def from_message(line_id: str, plan_info: PlanInfo) -> list[Plan] | SearchError:
     """M31 予定検索処理 データベースから予定を検索
 
     Args:
@@ -23,7 +23,11 @@ def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchError:
 
     # タイトルのみ
     if plan_info.title is not None and plan_info.start_time.date.day is None:
-        plans = Plan.query.filter(Plan.title == plan_info.title).all()
+        plans = (
+            Plan.query.filter(Plan.line_id == line_id)
+            .filter(Plan.title == plan_info.title)
+            .all()
+        )
         if len(plans) == 0:
             return SearchError.NotFound
         else:
@@ -31,17 +35,10 @@ def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchError:
 
     # 日付のみ
     if plan_info.title is None and plan_info.start_time.date.day is not None:
-        plans: list[Plan] = Plan.query.all()
+        plans: list[Plan] = Plan.query.filter(Plan.line_id == line_id).all()
         plans = list(
             filter(
-                lambda plan: (
-                    plan.allday is not None
-                    and plan.allday.day == plan_info.start_time.date.day
-                )
-                or (
-                    plan.start_time is not None
-                    and plan.start_time.day == plan_info.start_time.date.day
-                ),
+                lambda plan: get_start_time(plan).day == plan_info.start_time.date.day,
                 plans,
             )
         )
@@ -52,17 +49,14 @@ def from_message(_: str, plan_info: PlanInfo) -> list[Plan] | SearchError:
 
     # 両方指定されている
 
-    plans: list[Plan] = Plan.query.filter(Plan.title == plan_info.title).all()
+    plans: list[Plan] = (
+        Plan.query.filter(Plan.line_id == line_id)
+        .filter(Plan.title == plan_info.title)
+        .all()
+    )
     plans = list(
         filter(
-            lambda plan: (
-                plan.allday is not None
-                and plan.allday.day == plan_info.start_time.date.day
-            )
-            or (
-                plan.start_time is not None
-                and plan.start_time.day == plan_info.start_time.date.day
-            ),
+            lambda plan: get_start_time(plan).day == plan_info.start_time.date.day,
             plans,
         )
     )

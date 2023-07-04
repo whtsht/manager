@@ -46,12 +46,14 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
             plan_info.start_time.time.minute,
         )
         if (
-            db.session.query(Plan).filter(Plan.title == plan_info.title).first() is None  # type: ignore
-            and db.session.query(Plan)
-            .filter(get_start_time(Plan) == start_time.into())  # type: ignore
+            Plan.query.filter(Plan.line_id == line_id)
+            .filter(Plan.title == plan_info.title)
+            .filter(get_start_time(Plan) == start_time.into())
             .first()
-            is None
+            is not None
         ):
+            return AddError.AlreadyExist
+        else:
             notif_time = start_time.into()
             # notif_time -= timedelta(minutes=30)
             notif_time = StrictDateTime(
@@ -65,8 +67,6 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
             add_plan(plan)
             # 予定追加成功
             return None
-        else:
-            return AddError.AlreadyExist
 
 
 def add_plan(plan: Plan):

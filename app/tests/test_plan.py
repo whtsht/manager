@@ -4,19 +4,21 @@ from plan.notify import sched
 from datetime import datetime, timezone, timedelta
 
 mockLineID = "xjoqwejadfldskhfawe12"
+mockLineID2 = "xjoqwejadfldskhfawe12_2"
 tzinfo = timezone(timedelta(hours=9))
 
 
 def test_add_plan(client):
     main("2099/08/01の9:00から学校", mockLineID)
+    main("2099/08/01の9:00から学校", mockLineID2)
 
     plans = Plan.query.all()
-    assert len(plans) == 1
+    assert len(plans) == 2
     assert plans[0].title == "学校"
     assert plans[0].line_id == mockLineID
 
     jobs = sched.get_jobs()
-    assert len(jobs) == 1
+    assert len(jobs) == 2
 
     assert jobs[0].trigger.run_date == datetime(2099, 8, 1, 9, 0, tzinfo=tzinfo)
 

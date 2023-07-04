@@ -20,7 +20,22 @@ def test_add_plan(client):
     jobs = sched.get_jobs()
     assert len(jobs) == 2
 
-    assert jobs[0].trigger.run_date == datetime(2099, 8, 1, 9, 0, tzinfo=tzinfo)
+    # 30分前に通知
+    assert jobs[0].trigger.run_date == datetime(2099, 8, 1, 8, 30, tzinfo=tzinfo)
+
+    ptime = datetime.now(tz=tzinfo) + timedelta(minutes=15)
+
+    main(ptime.strftime("%Y/%m/%d %H:%M") + "から学校", mockLineID2)
+    plans = Plan.query.all()
+    assert len(plans) == 3
+
+    jobs = sched.get_jobs()
+    assert len(jobs) == 3
+
+    # 0分前に通知
+    assert jobs[0].trigger.run_date == datetime(
+        ptime.year, ptime.month, ptime.day, ptime.hour, ptime.minute, tzinfo=tzinfo
+    )
 
 
 def add_test_err(client):
@@ -32,6 +47,9 @@ def add_test_err(client):
 def test_search_plan(client):
     main("2099/03/03の9:00から学校", mockLineID)
     main("2099/03/03の16:00から遊び", mockLineID)
+
+    main("2099/03/03の9:00から学校", mockLineID2)
+    main("2099/03/03の16:00から遊び", mockLineID2)
 
     result = main("予定検索 学校", mockLineID)
     assert result == "予定が見つかりました。\nタイトル: 学校\n開始時刻: 2099-03-03 09:00:00"

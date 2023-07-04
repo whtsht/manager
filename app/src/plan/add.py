@@ -15,7 +15,7 @@ from info import (
     new_plan,
     get_start_time,
 )
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 
 def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
@@ -55,7 +55,8 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
             return AddError.AlreadyExist
         else:
             notif_time = start_time.into()
-            # notif_time -= timedelta(minutes=30)
+            if (datetime.now() + timedelta(minutes=30)) < notif_time:
+                notif_time -= timedelta(minutes=30)
             notif_time = StrictDateTime(
                 notif_time.year,
                 notif_time.month,

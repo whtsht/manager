@@ -4,8 +4,8 @@ Date:       2023/06/27
 Purpose:    C9 リクエスト処理に関するモジュール群
 """
 
-from flask import request, g, current_app
-from info import Plan, db
+from flask import request
+from info import Plan
 from flask import Blueprint
 from datetime import datetime
 import json

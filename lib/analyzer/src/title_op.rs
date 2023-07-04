@@ -9,7 +9,7 @@ use std::collections::HashSet;
 /// 追加操作の文字列であるかどうかを返す
 fn add_word(s: &str) -> bool {
     static WORD: Lazy<HashSet<&str>> =
-        Lazy::new(|| HashSet::from_iter(["追加", "入る"].into_iter()));
+        Lazy::new(|| HashSet::from_iter(["追加", "入る", "有る"].into_iter()));
     WORD.contains(s)
 }
 
@@ -25,6 +25,7 @@ fn search_word(s: &str) -> bool {
 ///
 /// * `noun`  - 名詞のリスト
 /// * `verb`  - 動詞のリスト
+/// * `hint`  - 名詞，動詞以外の単語のリスト
 ///
 /// 予定名，操作を返す
 pub fn get_title_and_op(
@@ -45,7 +46,7 @@ pub fn get_title_and_op(
         && hint.iter().filter(|w| add_word(w)).count() == 0
     {
         return (
-            Some(hint.into_iter().filter(cond).collect()).and_then(check_empty),
+            Some(noun.into_iter().filter(cond).collect()).and_then(check_empty),
             Some(Operation::Search),
         );
     }
@@ -53,7 +54,7 @@ pub fn get_title_and_op(
     for op in noun.iter().chain(verb.iter()) {
         if search_word(&op) {
             return (
-                Some(hint.into_iter().filter(cond).collect()).and_then(check_empty),
+                Some(noun.into_iter().filter(cond).collect()).and_then(check_empty),
                 Some(Operation::Search),
             );
         }

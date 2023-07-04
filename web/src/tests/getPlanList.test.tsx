@@ -1,4 +1,4 @@
-import { getPlanList } from "../components/getPlanList";
+import { getPlanList } from "../components/GetPlanList";
 
 describe("test getPlanList", () => {
     const fetchOk = () => {

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Calendar from "./Calendar";
 import UserShowDialog from "./UserShowDialog";
 import PlanShowDialog from "./PlanShowDialog";
-import { Plan } from "../plan";
+import { Plan } from "../Plan";
 
 /**
  * Appサーバーに対してGETリクエストを送信し，予定情報のリストを取得する．
@@ -72,7 +72,7 @@ function LoggedIn({ lineID }: { lineID: string }) {
                 handleOpenDelete={() => setOpenDelete(true)}
                 plan={plan}
             />
-            <UserShowDialog />
+            <UserShowDialog lineID={""} />
             <Calendar
                 planList={planList}
                 setPlan={(plan) => setPlan(plan)}

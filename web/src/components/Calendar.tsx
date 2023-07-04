@@ -9,7 +9,7 @@ import allLocales from "@fullcalendar/core/locales-all";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
-import { toPlan, Plan, toEventInput } from "../plan";
+import { toPlan, Plan, toEventInput } from "../Plan";
 import { useEffect } from "react";
 
 /**

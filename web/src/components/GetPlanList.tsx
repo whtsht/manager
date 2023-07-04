@@ -4,7 +4,7 @@
  * Purpose     : Appサーバーから指定利用者の予定情報のリストを取得する
  */
 
-import { Plan } from "../plan";
+import { Plan } from "../Plan";
 
 /**
  * Appサーバーに対してGETリクエストを送信し，予定情報のリストを取得する．

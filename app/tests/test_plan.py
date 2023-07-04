@@ -21,6 +21,12 @@ def test_add_plan(client):
     assert jobs[0].trigger.run_date == datetime(2099, 8, 1, 9, 0, tzinfo=tzinfo)
 
 
+def add_test_err(client):
+    main("2099/08/01の9:00から学校", mockLineID)
+    result = main("2099/08/01の9:00から学校", mockLineID)
+    assert result == "その予定は既に追加されています"
+
+
 def test_search_plan(client):
     main("2099/03/03の9:00から学校", mockLineID)
     main("2099/03/03の16:00から遊び", mockLineID)

@@ -47,7 +47,7 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
         )
         if (
             db.session.query(Plan).filter(Plan.title == plan_info.title).first() is None  # type: ignore
-            or db.session.query(Plan)
+            and db.session.query(Plan)
             .filter(get_start_time(Plan) == start_time.into())  # type: ignore
             .first()
             is None

@@ -42,6 +42,10 @@ pub fn get_title_and_op(
         }
     };
 
+    if hint == vec!["使い", "方"] {
+        return (None, None);
+    }
+
     if ((hint.contains(&"?".into()) || hint.contains(&"？".into())) && hint.contains(&"は".into()))
         && hint.iter().filter(|w| add_word(w)).count() == 0
     {

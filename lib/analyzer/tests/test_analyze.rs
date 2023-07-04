@@ -113,4 +113,22 @@ fn test_analyze() {
             title: None,
         }
     ));
+    assert_eq!(
+        analyze("使い方"),
+        Response {
+            operation: None,
+            date_time: DateTime {
+                date: Date {
+                    year: None,
+                    month: None,
+                    day: None
+                },
+                time: Time {
+                    hour: None,
+                    minute: None
+                }
+            },
+            title: None,
+        }
+    )
 }

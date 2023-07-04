@@ -82,6 +82,13 @@ fn get_day(offset: u8) -> Date {
     )
 }
 
+/// 今年の西暦を取得する
+fn current_year() -> u16 {
+    use chrono::prelude::{Datelike, FixedOffset, Utc};
+    let dt = Utc::now().with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap());
+    dt.year() as u16
+}
+
 /// 日付情報を解析するパーサー．
 ///
 /// フォーマット
@@ -114,12 +121,12 @@ pub fn date_parser(input: &str) -> IResult<&str, Date> {
         ),
         // <month><slash><day>
         map(tuple((month, slash, day)), |(month, _, day)| {
-            Date::new(None, Some(month), Some(day))
+            Date::new(Some(current_year()), Some(month), Some(day))
         }),
         // <month>月<day>日
         map(
             tuple((month, char('月'), day, char('日'))),
-            |(month, _, day, _)| Date::new(None, Some(month), Some(day)),
+            |(month, _, day, _)| Date::new(Some(current_year()), Some(month), Some(day)),
         ),
         // <year>年<month>月<day>日
         map(
@@ -131,10 +138,17 @@ pub fn date_parser(input: &str) -> IResult<&str, Date> {
 
 #[test]
 fn test_date_parser() {
-    assert_eq!(
+    assert!(matches!(
         date_parser("2/15"),
-        Ok(("", Date::new(None, Some(2), Some(15))))
-    );
+        Ok((
+            "",
+            Date {
+                year: Some(..),
+                month: Some(2),
+                day: Some(15)
+            }
+        ))
+    ));
     assert_eq!(
         date_parser("2023/2/15"),
         Ok(("", Date::new(Some(2023), Some(2), Some(15))))

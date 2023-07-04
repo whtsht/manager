@@ -123,7 +123,6 @@ pub fn get_date_time(input: &str) -> DateTime {
             Ok((rest, d)) => {
                 date = d;
                 word = rest;
-
                 continue;
             }
             _ => {}

@@ -31,10 +31,9 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
     if plan_info.title is None:
         return AddError.TitleNotSet
     elif (
-        plan_info.start_time.date.year is None
-        or plan_info.start_time.date.month is None
-        or plan_info.start_time.date.day is None
-        or plan_info.start_time.time.hour is None
+        (plan_info.start_time.date.month is None
+        or plan_info.start_time.date.day is None)
+        and plan_info.start_time.time.hour is None
     ):
         return AddError.DateTimeNotSet
     elif (plan_info.start_time.time.hour is None):
@@ -46,7 +45,7 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
         return AddError.DateNotSet
     else:
         start_time = StrictDateTime(
-            int(plan_info.start_time.date.year),
+            int(plan_info.start_time.date.year), #type: ignore
             int(plan_info.start_time.date.month),
             int(plan_info.start_time.date.day),
             int(plan_info.start_time.time.hour),

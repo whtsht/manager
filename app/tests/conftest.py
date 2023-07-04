@@ -1,5 +1,5 @@
 from server import Mode, create_app
-from info import db, Plan
+from info import db, Plan, PlanList, UserState
 from plan.notify import sched
 import pytest
 
@@ -24,6 +24,8 @@ def clean_up():
     yield db.session
 
     db.session.query(Plan).delete()
+    db.session.query(PlanList).delete()
+    db.session.query(UserState).delete()
     db.session.commit()
 
     jobs = sched.get_jobs()

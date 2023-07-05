@@ -74,7 +74,10 @@ function LoggedIn() {
                 handleOpenDelete={() => setOpenDelete(true)}
                 plan={plan}
             />
-            <UserShowDialog lineID={""} />
+            <UserShowDialog
+                open={openUser}
+                handleClose={() => setOpenUser(false)}
+            />
             <Calendar
                 planList={planList}
                 setPlan={(plan) => setPlan(plan)}

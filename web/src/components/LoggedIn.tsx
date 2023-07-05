@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Calendar from "./Calendar";
 import UserShowDialog from "./UserShowDialog";
 import PlanShowDialog from "./PlanShowDialog";
+import liff from "@line/liff";
 import { Plan } from "../Plan";
 
 /**
@@ -16,7 +17,9 @@ import { Plan } from "../Plan";
  * @param lineID - ユーザーのLineID
  * @returns 予定情報のリスト
  */
-async function getPlanList(lineID: string): Promise<[Plan] | null> {
+async function getPlanList(): Promise<[Plan] | null> {
+    const lineID = liff.getContext()?.userId;
+    if (lineID == undefined) return null;
     try {
         const response = await fetch("/web/get_plan_list/", {
             method: "GET",
@@ -42,10 +45,9 @@ async function getPlanList(lineID: string): Promise<[Plan] | null> {
 /**
  * ログイン処理
  * カレンダー画面，予定表示画面，予定修正画面，予定削除画面，利用者画面を管理
- * @param lineID    Line ID
  * @returns
  */
-function LoggedIn({ lineID }: { lineID: string }) {
+function LoggedIn() {
     const [planList, setPlanList] = useState<Plan[]>([]);
     const [plan, setPlan] = useState<null | Plan>(null);
     const [openAdd, setOpenAdd] = useState(false);
@@ -56,7 +58,7 @@ function LoggedIn({ lineID }: { lineID: string }) {
 
     useEffect(() => {
         (async () => {
-            const plans = await getPlanList(lineID);
+            const plans = await getPlanList();
             if (plans) {
                 setPlanList(plans);
             }

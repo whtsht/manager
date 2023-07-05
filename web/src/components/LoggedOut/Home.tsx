@@ -1,6 +1,7 @@
 import { Box, Button, Grid } from "@mui/material";
 import MobilePhone from "./MobilePhone";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import { LineButton, WebButton } from "./Buttons";
 
 export default function Home() {
     return (
@@ -55,38 +56,8 @@ export function Actions({ mobile }: { mobile: boolean }) {
           };
     return (
         <Box sx={prop} alignItems="end" padding={2}>
-            <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                sx={{ mr: 1 }}
-            >
-                <CalendarMonthOutlinedIcon
-                    fontSize="large"
-                    style={{
-                        transform: "scale(2.7)",
-                        padding: "30px",
-                        strokeWidth: "0.1",
-                    }}
-                />
-                <Button variant="contained" sx={{ mt: 2 }}>
-                    アプリに移動
-                </Button>
-            </Box>
-            <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                sx={{ ml: 1 }}
-            >
-                <img
-                    style={{ width: "100px" }}
-                    src="https://qr-official.line.me/gs/M_566fjjmf_GW.png"
-                ></img>
-                <Button variant="contained" sx={{ mt: 2 }}>
-                    Line友達追加
-                </Button>
-            </Box>
+            <WebButton />
+            <LineButton />
         </Box>
     );
 }

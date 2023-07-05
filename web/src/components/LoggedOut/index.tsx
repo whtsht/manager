@@ -1,11 +1,15 @@
 /**
- * Designer    : 小田桐光佑
- * Date        : 2023/6/
+ * Designer    : 小田桐光佑，東間日向
+ * Date        : 2023/7/5
  * Purpose     :ログインをする前の機能概要やログインページへの誘導のためのwebページ
  */
 import { Box, Stack } from "@mui/material";
 import Footer from "./Footer";
 import Header from "./Header";
+import Home from "./Home";
+import Line from "./Line";
+import Web from "./Web";
+import GetStart from "./GetStart";
 
 export const pages = ["Line", "Web", "始める"];
 
@@ -20,35 +24,35 @@ function LoggedOut() {
     return (
         <>
             <Header />
-            <Box sx={{ width: "100%" }}>
+            <Box sx={{ p: 0, m: 0 }}>
                 <Stack>
+                    <Home />
                     <div
-                        id="Home"
-                        style={{ backgroundColor: "#deffcf", height: "600px" }}
-                    >
-                        <div
-                            style={{
-                                background: "url(/smartphone-white.png)",
-                                backgroundSize: "100px",
-                                width: "100px",
-                                height: "100px",
-                            }}
-                        ></div>
-                    </div>
-                    <div
-                        id={`${pages[0]}`}
-                        style={{ backgroundColor: "#a6ff7d", height: "600px" }}
+                        id={pages[0]}
+                        style={{
+                            position: "relative",
+                            top: "-40px",
+                        }}
                     ></div>
+                    <Line />
                     <div
-                        id={`${pages[1]}`}
-                        style={{ backgroundColor: "#3fff3f", height: "600px" }}
+                        id={pages[1]}
+                        style={{
+                            position: "relative",
+                            top: "-40px",
+                        }}
                     ></div>
+                    <Web />
                     <div
-                        id={`${pages[2]}`}
-                        style={{ backgroundColor: "#a6ff7d", height: "700px" }}
+                        id={pages[2]}
+                        style={{
+                            position: "relative",
+                            top: "-40px",
+                        }}
                     ></div>
-                    <Footer />
+                    <GetStart />
                 </Stack>
+                <Footer />
             </Box>
         </>
     );

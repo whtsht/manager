@@ -14,3 +14,6 @@ ENV TERM xterm
 ENV PYTHONPATH $PYTHONPATH:/app/src
 ENV PATH $PATH:/home/vscode/.local/bin
 ENV APP_SERVER http://app-server:5000
+
+RUN mkdir -p node_modules \
+    && chown node node_modules

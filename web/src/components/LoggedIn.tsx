@@ -19,7 +19,7 @@ import PlanAddDialog from "./PlanAddDialog";
  * @returns 予定情報のリスト
  */
 async function getPlanList(): Promise<[Plan] | null> {
-    const lineID = liff.getContext()?.userId;
+    const lineID = "aaa"; // liff.getContext()?.userId;
     if (lineID == undefined) return null;
     try {
         const response = await fetch("/web/get_plan_list/", {

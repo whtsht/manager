@@ -15,9 +15,9 @@ import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import { addPlan } from "./AddPlan";
 import { Plan } from "../Plan";
-import { format } from "date-fns";
 import liff from "@line/liff";
 import { Stack } from "@mui/material";
+import { dateTostring } from "../Plan";
 
 function PlanAddDialog({
     open,
@@ -33,7 +33,7 @@ function PlanAddDialog({
     const [allDay, setAllDay] = React.useState<string | null>(null);
     const [start, setStart] = React.useState<string | null>(null);
     const [end, setEnd] = React.useState<string | null>(null);
-    const lineID = liff.getContext()?.userId!;
+    const lineID = "aaa"; //liff.getContext()?.userId!;
 
     useEffect(() => {
         if (ad) {
@@ -47,7 +47,7 @@ function PlanAddDialog({
     const handleChange = (setFunc: (value: string) => void) => {
         return (e: Date | null) => {
             if (e !== null) {
-                setFunc(format(e, "yyyy/MM/ddThh:mm"));
+                setFunc(dateTostring(e));
             }
         };
     };
@@ -75,10 +75,6 @@ function PlanAddDialog({
                     multiline
                     maxRows={3}
                     minRows={3}
-                />
-                <MobileDateTimePicker
-                    label="通知時間"
-                    onChange={handleChange(setNotifTime)}
                 />
                 <DateTimePicker
                     label="通知時間"

@@ -81,6 +81,7 @@ function LoggedIn() {
             <PlanAddDialog
                 open={openAdd}
                 handleClose={() => setOpenAdd(false)}
+                fetchPlanList={fetchPlanList}
             />
             <PlanRemoveDialog
                 open={openDelete}

@@ -9,7 +9,7 @@ use std::collections::HashSet;
 /// 追加操作の文字列であるかどうかを返す
 fn add_word(s: &str) -> bool {
     static WORD: Lazy<HashSet<&str>> =
-        Lazy::new(|| HashSet::from_iter(["追加", "入る", "有る"].into_iter()));
+        Lazy::new(|| HashSet::from_iter(["追加", "入る", "有る", "入れる"].into_iter()));
     WORD.contains(s)
 }
 
@@ -50,7 +50,13 @@ pub fn get_title_and_op(
         && hint.iter().filter(|w| add_word(w)).count() == 0
     {
         return (
-            Some(noun.into_iter().filter(cond).collect()).and_then(check_empty),
+            Some(
+                noun.into_iter()
+                    .chain(verb.into_iter())
+                    .filter(cond)
+                    .collect(),
+            )
+            .and_then(check_empty),
             Some(Operation::Search),
         );
     }
@@ -58,21 +64,39 @@ pub fn get_title_and_op(
     for op in noun.iter().chain(verb.iter()) {
         if search_word(&op) {
             return (
-                Some(noun.into_iter().filter(cond).collect()).and_then(check_empty),
+                Some(
+                    noun.into_iter()
+                        .chain(verb.into_iter())
+                        .filter(cond)
+                        .collect(),
+                )
+                .and_then(check_empty),
                 Some(Operation::Search),
             );
         }
 
         if add_word(&op) {
             return (
-                Some(noun.into_iter().filter(cond).collect()).and_then(check_empty),
+                Some(
+                    noun.into_iter()
+                        .chain(verb.into_iter())
+                        .filter(cond)
+                        .collect(),
+                )
+                .and_then(check_empty),
                 Some(Operation::Add),
             );
         }
     }
 
     (
-        Some(noun.into_iter().filter(cond).collect()).and_then(check_empty),
-        Some(Operation::Add),
+        Some(
+            noun.into_iter()
+                .chain(verb.into_iter())
+                .filter(cond)
+                .collect(),
+        )
+        .and_then(check_empty),
+        None,
     )
 }

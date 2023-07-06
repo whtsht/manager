@@ -22,9 +22,9 @@ fn test_analyze() {
         if title == "面接".to_string()
     ));
     assert!(matches!(
-        analyze("明日のに面接の予定"),
+        analyze("明日に面接の予定"),
         Response {
-            operation: Some(Operation::Add),
+            operation: None,
             date_time: DateTime {
                 date: Date {
                     year: Some(_),
@@ -40,10 +40,11 @@ fn test_analyze() {
         }
         if title == "面接".to_string()
     ));
+    println!("{:?}", analyze("明日は５時起き"));
     assert!(matches!(
         analyze("明日は５時起き"),
         Response {
-            operation: Some(Operation::Add),
+            operation: None,
             date_time: DateTime {
                 date: Date {
                     year: Some(_),
@@ -80,7 +81,7 @@ fn test_analyze() {
     assert!(matches!(
         analyze("予定"),
         Response {
-            operation: Some(Operation::Add),
+            operation: None,
             date_time: DateTime {
                 date: Date {
                     year: None,

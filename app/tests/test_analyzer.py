@@ -3,7 +3,7 @@ from info import OP
 
 
 def test_add_request(client):
-    input_info = analyze_message("明日は学校")
+    input_info = analyze_message("追加 明日 学校")
     assert input_info.op == OP.Add
     assert input_info.title == "学校"
     assert input_info.start_time.date.year is not None
@@ -12,7 +12,7 @@ def test_add_request(client):
     assert input_info.start_time.time.hour is None
     assert input_info.start_time.time.minute is None
 
-    input_info = analyze_message("2023/7/11の16:30からバイト")
+    input_info = analyze_message("追加 2023/7/11の16:30 バイト")
     assert input_info.op == OP.Add
     assert input_info.title == "バイト"
     assert input_info.start_time.date.year == 2023

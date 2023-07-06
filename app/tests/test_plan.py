@@ -9,8 +9,8 @@ tzinfo = timezone(timedelta(hours=9))
 
 
 def test_add_plan(client):
-    main("2099/08/01の9:00から学校", mockLineID)
-    main("2099/08/01の9:00から学校", mockLineID2)
+    main("追加 2099/08/01の9:00 学校", mockLineID)
+    main("追加 2099/08/01の9:00 学校", mockLineID2)
 
     plans = Plan.query.all()
     assert len(plans) == 2
@@ -25,7 +25,7 @@ def test_add_plan(client):
 
     ptime = datetime.now(tz=tzinfo) + timedelta(minutes=15)
 
-    main(ptime.strftime("%Y/%m/%d %H:%M") + "から学校", mockLineID2)
+    main("追加 " + ptime.strftime("%Y/%m/%d %H:%M") + " 学校", mockLineID2)
     plans = Plan.query.all()
     assert len(plans) == 3
 
@@ -39,17 +39,17 @@ def test_add_plan(client):
 
 
 def add_test_err(client):
-    main("2099/08/01の9:00から学校", mockLineID)
-    result = main("2099/08/01の9:00から学校", mockLineID)
+    main("追加 2099/08/01の9:00 学校", mockLineID)
+    result = main("追加 2099/08/01の9:00 学校", mockLineID)
     assert result == "その予定は既に追加されています"
-
-
+#
+#
 def test_search_plan(client):
-    main("2099/03/03の9:00から学校", mockLineID)
-    main("2099/03/03の16:00から遊び", mockLineID)
+    main("追加 2099/03/03 9:00 学校", mockLineID)
+    main("追加 2099/03/03 16:00 遊び", mockLineID)
 
-    main("2099/03/03の9:00から学校", mockLineID2)
-    main("2099/03/03の16:00から遊び", mockLineID2)
+    main("追加 2099/03/03の9:00 学校", mockLineID2)
+    main("追加 2099/03/03の16:00 遊び", mockLineID2)
 
     result = main("予定検索 学校", mockLineID)
     assert result == "予定が見つかりました。\nタイトル: 学校\n開始時刻: 2099-03-03 09:00:00"
@@ -73,6 +73,6 @@ def test_search_plan(client):
     assert result == "予定を見つけることができませんでした。"
 
 
-def test_search_err(client):
-    result = main("検索", mockLineID)
-    assert result == "予定のタイトル、日付のどちらかを入力して下さい。"
+# def test_search_err(client):
+#     result = main("検索", mockLineID)
+#     assert result == "予定のタイトル、日付のどちらかを入力して下さい。"

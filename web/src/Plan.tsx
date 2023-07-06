@@ -4,6 +4,7 @@
  * Purpose     : 予定情報の定義とFullCalendarとの連携
  */
 import { EventClickArg, EventInput } from "@fullcalendar/core";
+import { format } from "date-fns";
 
 /**
  * 予定情報を表すインターフェース
@@ -84,5 +85,13 @@ function toEventInput(plan: Plan): EventInput {
     };
 }
 
+function stringToDate(str: string): Date {
+    return new Date(str.replaceAll("/", "-"));
+}
+
+function dateTostring(date: Date): string {
+    return format(date, "yyyy/MM/dd") + "T" + format(date, "hh:mm");
+}
+
 export type { Plan };
-export { toPlan, toEventInput };
+export { toPlan, toEventInput, stringToDate, dateTostring };

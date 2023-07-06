@@ -8,13 +8,20 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Plan } from "../Plan";
+import { Plan, stringToDate } from "../Plan";
 import Button from "@mui/material/Button";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Textarea from "@mui/joy/Textarea";
 import CircleIcon from "@mui/icons-material/Circle";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import {
+    Box,
+    Checkbox,
+    FormControlLabel,
+    Stack,
+    TextField,
+} from "@mui/material";
 
 /**
  * 予定表示画面
@@ -42,6 +49,7 @@ function PlanShowDialog({
     if (plan == null) {
         return <></>;
     }
+    console.log(plan);
 
     const TimeContents = plan.allDay ? (
         <>
@@ -56,20 +64,67 @@ function PlanShowDialog({
         </>
     );
 
+    const ad = false;
     return (
-        <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="responsive-dialog-title"
-        >
-            <TitleContent title={plan?.title} />
-            <DetailContent detail={plan?.detail} />
-            {TimeContents}
-            <ActionContent
-                handleClose={handleClose}
-                openModify={handleOpenModify}
-                openDelete={handleOpenDelete}
-            />
+        <Dialog open={open} onClose={handleClose} fullWidth>
+            <Stack
+                component="form"
+                display="flex"
+                justifyContent="center"
+                gap={2}
+                padding={3}
+            >
+                <TextField
+                    id="予定名"
+                    label="予定名"
+                    variant="outlined"
+                    value={plan.title}
+                    InputProps={{ readOnly: true }}
+                />
+                <TextField
+                    id="メモ"
+                    label="メモ"
+                    variant="outlined"
+                    multiline
+                    maxRows={3}
+                    minRows={3}
+                    value={plan.detail}
+                    InputProps={{ readOnly: true }}
+                />
+                <DateTimePicker label="通知時間" />
+                <FormControlLabel
+                    control={<Checkbox defaultChecked />}
+                    label="終日"
+                />
+
+                <Box sx={{ width: "100%", height: "140px" }}>
+                    {ad ? (
+                        <>
+                            <DateTimePicker
+                                label="開始時刻"
+                                sx={{ width: "100%" }}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <DateTimePicker
+                                label="開始時刻"
+                                sx={{ width: "100%" }}
+                            />
+                            <div style={{ height: "20px" }}></div>
+                            <DateTimePicker
+                                label="終了時刻"
+                                sx={{ width: "100%" }}
+                            />
+                        </>
+                    )}
+                </Box>
+                <ActionContents
+                    handleClose={handleClose}
+                    openModify={handleOpenModify}
+                    openDelete={handleOpenDelete}
+                />
+            </Stack>
         </Dialog>
     );
 }
@@ -107,7 +162,7 @@ function DetailContent({ detail }: { detail: string | undefined }) {
     );
 }
 
-function ActionContent({
+function ActionContents({
     handleClose,
     openModify,
     openDelete,

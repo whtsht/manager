@@ -43,6 +43,7 @@ function PlanShowDialog({
     if (plan == null) {
         return <></>;
     }
+    console.log(plan);
 
     const ad = plan.allDay !== null;
     return (

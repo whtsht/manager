@@ -12,6 +12,7 @@ import liff from "@line/liff";
 import { Plan } from "../Plan";
 import PlanAddDialog from "./PlanAddDialog";
 import PlanRemoveDialog from "./PlanRemoveDialog";
+import PlanModifyDialog from "./PlanModifyDialog";
 
 /**
  * Appサーバーに対してGETリクエストを送信し，予定情報のリストを取得する．
@@ -21,7 +22,7 @@ import PlanRemoveDialog from "./PlanRemoveDialog";
  */
 async function getPlanList(): Promise<[Plan] | null> {
     const lineID = "aaa"; // liff.getContext()?.userId;
-    if (lineID == undefined) return null;
+    if (lineID === undefined) return null;
     try {
         const response = await fetch("/web/get_plan_list/", {
             method: "POST",
@@ -34,7 +35,7 @@ async function getPlanList(): Promise<[Plan] | null> {
         });
 
         // 有効な値が返ってきたか確認
-        if (!response.ok || response.status != 200) {
+        if (!response.ok || response.status !== 200) {
             return null;
         }
 
@@ -82,6 +83,12 @@ function LoggedIn() {
                 open={openAdd}
                 handleClose={() => setOpenAdd(false)}
                 fetchPlanList={fetchPlanList}
+            />
+            <PlanModifyDialog
+                open={openModify}
+                fetchPlanList={fetchPlanList}
+                handleClose={() => setOpenModify(false)}
+                plan={plan}
             />
             <PlanRemoveDialog
                 open={openDelete}

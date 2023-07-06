@@ -16,7 +16,7 @@ import Button from "@mui/material/Button";
 import { addPlan } from "./AddPlan";
 import { Plan } from "../Plan";
 import liff from "@line/liff";
-import { Stack } from "@mui/material";
+import { DialogActions, Stack } from "@mui/material";
 import { dateTostring } from "../Plan";
 
 function PlanAddDialog({
@@ -56,13 +56,7 @@ function PlanAddDialog({
 
     return (
         <Dialog open={open} onClose={handleClose} fullWidth>
-            <Stack
-                component="form"
-                display="flex"
-                justifyContent="center"
-                gap={2}
-                padding={3}
-            >
+            <Stack component="form" display="flex" gap={2} padding={3}>
                 <TextField
                     onChange={(e) => setTitle(e.target.value)}
                     id="予定名"
@@ -117,25 +111,28 @@ function PlanAddDialog({
                         </>
                     )}
                 </Box>
-                <Button
-                    variant="contained"
-                    onClick={async () => {
-                        const plan: Plan = {
-                            lineID,
-                            title: title,
-                            detail: memo,
-                            notifTime: notifTime,
-                            allDay: allDay,
-                            start: start,
-                            end: end,
-                        } as Plan;
-                        await addPlan(lineID, plan);
-                        handleClose();
-                        fetchPlanList();
-                    }}
-                >
-                    追加
-                </Button>
+                <DialogActions>
+                    <Button
+                        autoFocus
+                        variant="outlined"
+                        onClick={async () => {
+                            const plan: Plan = {
+                                lineID,
+                                title: title,
+                                detail: memo,
+                                notifTime: notifTime,
+                                allDay: allDay,
+                                start: start,
+                                end: end,
+                            } as Plan;
+                            await addPlan(lineID, plan);
+                            handleClose();
+                            fetchPlanList();
+                        }}
+                    >
+                        追加
+                    </Button>
+                </DialogActions>
             </Stack>
         </Dialog>
     );

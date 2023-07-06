@@ -40,12 +40,12 @@ function PlanShowDialog({
     handleOpenDelete: () => void;
     plan: Plan | null;
 }) {
-    if (plan == null) {
+    if (plan === null) {
         return <></>;
     }
-    console.log(plan);
 
     const ad = plan.allDay !== null;
+    console.log(plan.allDay);
     return (
         <Dialog open={open} onClose={handleClose} fullWidth>
             <Stack
@@ -78,7 +78,13 @@ function PlanShowDialog({
                     readOnly
                 />
                 <FormControlLabel
-                    control={<Checkbox checked disabled />}
+                    control={
+                        ad ? (
+                            <Checkbox checked disabled />
+                        ) : (
+                            <Checkbox disabled />
+                        )
+                    }
                     label="終日"
                 />
 
@@ -88,7 +94,11 @@ function PlanShowDialog({
                             <DateTimePicker
                                 label="開始時刻"
                                 sx={{ width: "100%" }}
-                                value={stringToDate(plan.allDay!)}
+                                value={
+                                    plan.allDay
+                                        ? stringToDate(plan.allDay)
+                                        : null
+                                }
                                 readOnly
                             />
                         </>
@@ -97,14 +107,16 @@ function PlanShowDialog({
                             <DateTimePicker
                                 label="開始時刻"
                                 sx={{ width: "100%" }}
-                                value={stringToDate(plan.start!)}
+                                value={
+                                    plan.start ? stringToDate(plan.start) : null
+                                }
                                 readOnly
                             />
                             <div style={{ height: "20px" }}></div>
                             <DateTimePicker
                                 label="終了時刻"
                                 sx={{ width: "100%" }}
-                                value={stringToDate(plan.end!)}
+                                value={plan.end ? stringToDate(plan.end) : null}
                                 readOnly
                             />
                         </>
@@ -112,8 +124,13 @@ function PlanShowDialog({
                 </Box>
                 <ActionContents
                     handleClose={handleClose}
-                    openModify={handleOpenModify}
-                    openDelete={handleOpenDelete}
+                    openModify={() => {
+                        handleOpenModify();
+                        handleClose();
+                    }}
+                    openDelete={() => {
+                        handleOpenDelete();
+                    }}
                 />
             </Stack>
         </Dialog>
@@ -131,13 +148,13 @@ function ActionContents({
 }) {
     return (
         <DialogActions>
-            <Button autoFocus onClick={handleClose}>
+            <Button variant="outlined" autoFocus onClick={handleClose}>
                 閉じる
             </Button>
-            <Button onClick={openModify} autoFocus>
+            <Button variant="outlined" onClick={openModify} autoFocus>
                 編集
             </Button>
-            <Button onClick={openDelete} autoFocus>
+            <Button variant="outlined" onClick={openDelete} autoFocus>
                 削除
             </Button>
         </DialogActions>

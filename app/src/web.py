@@ -52,6 +52,8 @@ def from_json(data: dict[str, any]) -> Plan:  # type: ignore
     detail = data["detail"]
     line_id = data["lineID"]
     notif_time = datetime.strptime(data["notifTime"], "%Y/%m/%dT%H:%M")
+    print(data["allDay"])
+    print(data["start"])
     allday = to_datetime(data["allDay"])
     start_time = to_datetime(data["start"])
     end_time = to_datetime(data["end"])

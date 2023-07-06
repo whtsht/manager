@@ -68,6 +68,8 @@ function toPlan(info: EventClickArg): Plan {
  * @returns
  */
 function toEventInput(plan: Plan): EventInput {
+    console.log(plan.start);
+    console.log(plan.allDay);
     let start = (plan.start || plan.allDay) as string;
     start = start.replaceAll("/", "-");
     return {

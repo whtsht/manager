@@ -61,7 +61,7 @@ pub fn analyze(input: &str) -> Response {
                     noun.push(String::from(word));
                 }
                 if &node.feature[0..6] == "動詞" {
-                    verb.push(String::from(node.feature.split(",").nth(7).unwrap()));
+                    verb.push(String::from(word));
                 }
 
                 hint.push(String::from(word));

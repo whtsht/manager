@@ -3,6 +3,9 @@ import LoggedOut from "./components/LoggedOut";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import liff from "@line/liff";
 import LoggedIn from "./components/LoggedIn";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import ja from "date-fns/locale/ja";
 
 function isLoggedIn(): boolean {
     try {
@@ -13,17 +16,19 @@ function isLoggedIn(): boolean {
 }
 
 function App() {
-    console.log(isLoggedIn());
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route
-                    path="/"
-                    element={isLoggedIn() ? <LoggedIn /> : <LoggedOut />}
-                />
-                <Route path="/how_to_use" element={<HowToUse />} />
-            </Routes>
-        </BrowserRouter>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
+            <BrowserRouter>
+                <Routes>
+                    <Route
+                        path="/"
+                        // element={isLoggedIn() ? <LoggedIn /> : <LoggedOut />}
+                        element={<LoggedIn />}
+                    />
+                    <Route path="/how_to_use" element={<HowToUse />} />
+                </Routes>
+            </BrowserRouter>
+        </LocalizationProvider>
     );
 }
 

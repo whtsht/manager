@@ -13,7 +13,6 @@ import Button from "@mui/material/Button";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Textarea from "@mui/joy/Textarea";
-import dayjs from "dayjs";
 import CircleIcon from "@mui/icons-material/Circle";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
@@ -99,7 +98,7 @@ function DetailContent({ detail }: { detail: string | undefined }) {
             style={{
                 flexWrap: "wrap",
                 gap: "40px",
-                padding: "0px 20px",
+                padding: "0px 30px",
             }}
         >
             <p>メモ</p>
@@ -133,32 +132,33 @@ function ActionContent({
 }
 
 function TimeContent({ title, time }: { title: string; time: string }) {
-    console.log(dayjs(time));
-    return (
-        <DialogContent>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    gap: "20px",
-                }}
-            >
-                <div style={{ width: "100px" }}>
-                    <p style={{ fontSize: "16px", textAlign: "center" }}>
-                        {title}
-                    </p>
-                </div>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker
-                        defaultValue={dayjs(time)}
-                        ampm={false}
-                        readOnly
-                        format="YYYY/MM/DD  HH:mm"
-                    />
-                </LocalizationProvider>
-            </div>
-        </DialogContent>
-    );
+    return <></>;
+    // console.log(dayjs(time));
+    // return (
+    //     <DialogContent>
+    //         <div
+    //             style={{
+    //                 display: "flex",
+    //                 justifyContent: "space-around",
+    //                 gap: "20px",
+    //             }}
+    //         >
+    //             <div style={{ width: "100px" }}>
+    //                 <p style={{ fontSize: "16px", textAlign: "center" }}>
+    //                     {title}
+    //                 </p>
+    //             </div>
+    //             <LocalizationProvider dateAdapter={AdapterDayjs}>
+    //                 <DateTimePicker
+    //                     defaultValue={dayjs(time)}
+    //                     ampm={false}
+    //                     readOnly
+    //                     format="YYYY/MM/DD  HH:mm"
+    //                 />
+    //             </LocalizationProvider>
+    //         </div>
+    //     </DialogContent>
+    // );
 }
 
 export default PlanShowDialog;

@@ -10,6 +10,7 @@ import UserShowDialog from "./UserShowDialog";
 import PlanShowDialog from "./PlanShowDialog";
 import liff from "@line/liff";
 import { Plan } from "../Plan";
+import PlanAddDialog from "./PlanAddDialog";
 
 /**
  * Appサーバーに対してGETリクエストを送信し，予定情報のリストを取得する．
@@ -22,7 +23,7 @@ async function getPlanList(): Promise<[Plan] | null> {
     if (lineID == undefined) return null;
     try {
         const response = await fetch("/web/get_plan_list/", {
-            method: "GET",
+            method: "POST",
             headers: {
                 "content-type": "application/json;charset=UTF-8",
             },
@@ -73,6 +74,10 @@ function LoggedIn() {
                 handleOpenModify={() => setOpenModify(true)}
                 handleOpenDelete={() => setOpenDelete(true)}
                 plan={plan}
+            />
+            <PlanAddDialog
+                open={openAdd}
+                handleClose={() => setOpenAdd(false)}
             />
             <UserShowDialog
                 open={openUser}

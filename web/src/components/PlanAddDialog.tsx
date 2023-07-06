@@ -4,49 +4,62 @@
 //  * Purpose     : test
 //  */
 
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { addPlan } from "./AddPlan";
 import { Plan } from "../Plan";
-import dayjs, { Dayjs } from "dayjs";
+import { format } from "date-fns";
+import liff from "@line/liff";
+import { Stack } from "@mui/material";
 
 function PlanAddDialog({
     open,
     handleClose,
-    lineID,
 }: {
     open: boolean;
     handleClose: () => void;
-    lineID: string;
 }) {
     const [ad, setAd] = React.useState(true);
     const [title, setTitle] = React.useState("");
     const [memo, setMemo] = React.useState("");
     const [notifTime, setNotifTime] = React.useState("");
-    const [allDay, setAllDay] = React.useState("");
-    const [start, setStart] = React.useState("");
-    const [end, setEnd] = React.useState("");
+    const [allDay, setAllDay] = React.useState<string | null>(null);
+    const [start, setStart] = React.useState<string | null>(null);
+    const [end, setEnd] = React.useState<string | null>(null);
+    const lineID = liff.getContext()?.userId!;
+
+    useEffect(() => {
+        if (ad) {
+            setStart(null);
+            setEnd(null);
+        } else {
+            setAllDay(null);
+        }
+    }, [ad]);
+
+    const handleChange = (setFunc: (value: string) => void) => {
+        return (e: Date | null) => {
+            if (e !== null) {
+                setFunc(format(e, "yyyy/MM/ddThh:mm"));
+            }
+        };
+    };
 
     return (
-        <Dialog open={open} onClose={handleClose}>
-            <Box
+        <Dialog open={open} onClose={handleClose} fullWidth>
+            <Stack
                 component="form"
-                sx={{
-                    "& > :not(style)": { m: 1, width: "500px" },
-                }}
-                noValidate
-                autoComplete="off"
+                display="flex"
+                justifyContent="center"
+                gap={2}
+                padding={3}
             >
                 <TextField
                     onChange={(e) => setTitle(e.target.value)}
@@ -59,25 +72,18 @@ function PlanAddDialog({
                     id="メモ"
                     label="メモ"
                     variant="outlined"
+                    multiline
+                    maxRows={3}
+                    minRows={3}
                 />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DateTimePicker"]}>
-                        <DemoItem label={"通知時間"}>
-                            <DateTimePicker
-                                views={[
-                                    "year",
-                                    "month",
-                                    "day",
-                                    "hours",
-                                    "minutes",
-                                ]}
-                                onChange={(e: Dayjs | null) =>
-                                    setNotifTime(e!.format("YYYY/MM/DDThh:mm"))
-                                }
-                            />
-                        </DemoItem>
-                    </DemoContainer>
-                </LocalizationProvider>
+                <MobileDateTimePicker
+                    label="通知時間"
+                    onChange={handleChange(setNotifTime)}
+                />
+                <DateTimePicker
+                    label="通知時間"
+                    onChange={handleChange(setNotifTime)}
+                />
                 <FormControlLabel
                     control={
                         <Checkbox
@@ -87,63 +93,37 @@ function PlanAddDialog({
                     }
                     label="終日"
                 />
-                {ad ? (
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={["DateTimePicker"]}>
-                            <DemoItem label={"開始時間"}>
-                                <DateTimePicker
-                                    views={[
-                                        "year",
-                                        "month",
-                                        "day",
-                                        "hours",
-                                        "minutes",
-                                    ]}
-                                    onChange={(e: Dayjs | null) =>
-                                        setAllDay(e!.format("YYYY/MM/DDThh:mm"))
-                                    }
-                                />
-                            </DemoItem>
-                        </DemoContainer>
-                    </LocalizationProvider>
-                ) : (
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={["DateTimePicker"]}>
-                            <DemoItem label={"開始時間"}>
-                                <DateTimePicker
-                                    views={[
-                                        "year",
-                                        "month",
-                                        "day",
-                                        "hours",
-                                        "minutes",
-                                    ]}
-                                    onChange={(e: Dayjs | null) =>
-                                        setStart(e!.format("YYYY/MM/DDThh:mm"))
-                                    }
-                                />
-                            </DemoItem>
-                            <DemoItem label={"終了時間"}>
-                                <DateTimePicker
-                                    views={[
-                                        "year",
-                                        "month",
-                                        "day",
-                                        "hours",
-                                        "minutes",
-                                    ]}
-                                    onChange={(e: Dayjs | null) =>
-                                        setEnd(e!.format("YYYY/MM/DDThh:mm"))
-                                    }
-                                />
-                            </DemoItem>
-                        </DemoContainer>
-                    </LocalizationProvider>
-                )}
+
+                <Box sx={{ width: "100%", height: "140px" }}>
+                    {ad ? (
+                        <>
+                            <DateTimePicker
+                                label="開始時刻"
+                                sx={{ width: "100%" }}
+                                onChange={handleChange(setAllDay)}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <DateTimePicker
+                                label="開始時刻"
+                                sx={{ width: "100%" }}
+                                onChange={handleChange(setStart)}
+                            />
+                            <div style={{ height: "20px" }}></div>
+                            <DateTimePicker
+                                label="終了時刻"
+                                sx={{ width: "100%" }}
+                                onChange={handleChange(setEnd)}
+                            />
+                        </>
+                    )}
+                </Box>
                 <Button
                     variant="contained"
-                    onClick={() => {
+                    onClick={async () => {
                         const plan: Plan = {
+                            lineID,
                             title: title,
                             detail: memo,
                             notifTime: notifTime,
@@ -151,14 +131,144 @@ function PlanAddDialog({
                             start: start,
                             end: end,
                         } as Plan;
-                        addPlan(lineID, plan);
+                        const ret = await addPlan(lineID, plan);
+                        alert(ret);
                     }}
                 >
                     追加
                 </Button>
-            </Box>
+            </Stack>
         </Dialog>
     );
 }
 
 export default PlanAddDialog;
+// <Box component="form" noValidate autoComplete="off">
+//                 <TextField
+//                     onChange={(e) => setTitle(e.target.value)}
+//                     id="予定名"
+//                     label="予定名"
+//                     variant="outlined"
+//                 />
+//                 <TextField
+//                     onChange={(e) => setMemo(e.target.value)}
+//                     id="メモ"
+//                     label="メモ"
+//                     variant="outlined"
+//                 />
+//                 <LocalizationProvider dateAdapter={AdapterDayjs}>
+//                     <DemoContainer components={["DateTimePicker"]}>
+//                         <DemoItem label={"通知時間"}>
+//                             <DateTimePicker
+//                                 views={[
+//                                     "year",
+//                                     "month",
+//                                     "day",
+//                                     "hours",
+//                                     "minutes",
+//                                 ]}
+//                                 onChange={(e: Dayjs | null) => {
+//                                     if (e !== null) {
+//                                         setNotifTime(
+//                                             e.format("YYYY/MM/DDThh:mm")
+//                                         );
+//                                     }
+//                                 }}
+//                             />
+//                         </DemoItem>
+//                     </DemoContainer>
+//                 </LocalizationProvider>
+//                 <FormControlLabel
+//                     control={
+//                         <Checkbox
+//                             defaultChecked
+//                             onChange={(e) => setAd(e.target.checked)}
+//                         />
+//                     }
+//                     label="終日"
+//                 />
+//                 {ad ? (
+//                     <LocalizationProvider dateAdapter={AdapterDayjs}>
+//                         <DemoContainer components={["DateTimePicker"]}>
+//                             <DemoItem label={"開始時間"}>
+//                                 <DateTimePicker
+//                                     views={[
+//                                         "year",
+//                                         "month",
+//                                         "day",
+//                                         "hours",
+//                                         "minutes",
+//                                     ]}
+//                                     onChange={(e: Dayjs | null) => {
+//                                         if (e !== null) {
+//                                             setAllDay(
+//                                                 e.format("YYYY/MM/DDThh:mm")
+//                                             );
+//                                         }
+//                                     }}
+//                                 />
+//                             </DemoItem>
+//                         </DemoContainer>
+//                     </LocalizationProvider>
+//                 ) : (
+//                     <LocalizationProvider dateAdapter={AdapterDayjs}>
+//                         <DemoContainer components={["DateTimePicker"]}>
+//                             <DemoItem label={"開始時間"}>
+//                                 <DateTimePicker
+//                                     views={[
+//                                         "year",
+//                                         "month",
+//                                         "day",
+//                                         "hours",
+//                                         "minutes",
+//                                     ]}
+//                                     onChange={(e: Dayjs | null) => {
+//                                         if (e !== null) {
+//                                             setStart(
+//                                                 e.format("YYYY/MM/DDThh:mm")
+//                                             );
+//                                         }
+//                                     }}
+//                                 />
+//                             </DemoItem>
+//                             <DemoItem label={"終了時間"}>
+//                                 <DateTimePicker
+//                                     views={[
+//                                         "year",
+//                                         "month",
+//                                         "day",
+//                                         "hours",
+//                                         "minutes",
+//                                     ]}
+//                                     onChange={(e: Dayjs | null) => {
+//                                         if (e !== null) {
+//                                             setEnd(
+//                                                 e!.format("YYYY/MM/DDThh:mm")
+//                                             );
+//                                         }
+//                                     }}
+//                                 />
+//                             </DemoItem>
+//                         </DemoContainer>
+//                     </LocalizationProvider>
+//                 )}
+//                 <Button
+//                     variant="contained"
+//                     onClick={async () => {
+//                         const plan: Plan = {
+//                             lineID,
+//                             title: title,
+//                             detail: memo,
+//                             notifTime: notifTime,
+//                             allDay: allDay,
+//                             start: start,
+//                             end: end,
+//                         } as Plan;
+//                         const ret = await addPlan(lineID, plan);
+//                         alert(ret);
+//                     }}
+//                 >
+//                     追加
+//                 </Button>
+//             </Box>
+//

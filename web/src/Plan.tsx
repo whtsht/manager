@@ -14,6 +14,10 @@ interface Plan {
      */
     id: number;
     /**
+     * Line ID
+     */
+    lineID: string;
+    /**
      * 予定名
      */
     title: string;
@@ -48,6 +52,7 @@ function toPlan(info: EventClickArg): Plan {
     return {
         id: Number.parseInt(info.event.id),
         title: info.event.title,
+        lineID: info.event.extendedProps.lineID,
         detail: info.event.extendedProps.detail,
         notifTime: info.event.extendedProps.notif_time,
         allDay: info.event.extendedProps.allDay,
@@ -70,6 +75,7 @@ function toEventInput(plan: Plan): EventInput {
         start,
         extendedProps: {
             detail: plan.detail,
+            lineID: plan.lineID,
             notifTime: plan.notifTime,
             allDay: plan.allDay,
             start: plan.start,

@@ -45,6 +45,7 @@ function Calendar({
         setIcon("month", "calendar_month");
         setIcon("listMonth", "list");
     }, []);
+
     return (
         <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin, listPlugin]}
@@ -76,7 +77,7 @@ function Calendar({
                 handleOpenShow();
             }}
             initialView={"month"}
-            initialEvents={planList.map(toEventInput)}
+            events={planList.map(toEventInput)}
             locales={allLocales}
             locale="ja"
             titleFormat={{

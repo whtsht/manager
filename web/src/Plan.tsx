@@ -55,7 +55,7 @@ function toPlan(info: EventClickArg): Plan {
         title: info.event.title,
         lineID: info.event.extendedProps.lineID,
         detail: info.event.extendedProps.detail,
-        notifTime: info.event.extendedProps.notif_time,
+        notifTime: info.event.extendedProps.notifTime,
         allDay: info.event.extendedProps.allDay,
         start: info.event.extendedProps.start,
         end: info.event.extendedProps.end,
@@ -90,7 +90,7 @@ function stringToDate(str: string): Date {
 }
 
 function dateTostring(date: Date): string {
-    return format(date, "yyyy/MM/dd") + "T" + format(date, "hh:mm");
+    return format(date, "yyyy/MM/dd hh:mm").replace(" ", "T");
 }
 
 export type { Plan };

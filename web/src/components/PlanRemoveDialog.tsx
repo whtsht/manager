@@ -19,17 +19,40 @@ import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 
+async function removePlan(planID: string): Promise<boolean> {
+    try {
+        await fetch("/web/remove_plan/", {
+            method: "POST",
+            headers: {
+                "content-type": "application/json;charset=UTF-8",
+            },
+            body: JSON.stringify({
+                planID: planID,
+            }),
+        });
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 function PlanRemoveDialog({
     open,
     handleClose,
+    handleCloseShow,
+    fetchPlanList,
     plan,
-    removePlan,
 }: {
     open: boolean;
     handleClose: () => void;
-    plan: Plan;
-    removePlan: (id: number) => Promise<void>;
+    handleCloseShow: () => void;
+    fetchPlanList: () => void;
+    plan: Plan | null;
 }) {
+    if (plan === null) {
+        return <></>;
+    }
+
     return (
         <Dialog
             open={open}
@@ -42,8 +65,10 @@ function PlanRemoveDialog({
             <DialogActions>
                 <Button
                     onClick={async () => {
-                        await removePlan(plan.id);
+                        await removePlan(plan.id.toString());
                         handleClose();
+                        handleCloseShow();
+                        fetchPlanList();
                     }}
                 >
                     はい

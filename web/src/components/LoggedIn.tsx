@@ -11,6 +11,7 @@ import PlanShowDialog from "./PlanShowDialog";
 import liff from "@line/liff";
 import { Plan } from "../Plan";
 import PlanAddDialog from "./PlanAddDialog";
+import PlanRemoveDialog from "./PlanRemoveDialog";
 
 /**
  * Appサーバーに対してGETリクエストを送信し，予定情報のリストを取得する．
@@ -57,13 +58,15 @@ function LoggedIn() {
     const [openModify, setOpenModify] = useState(false);
     const [openUser, setOpenUser] = useState(false);
 
+    const fetchPlanList = async () => {
+        const plans = await getPlanList();
+        if (plans) {
+            setPlanList(plans);
+        }
+    };
+
     useEffect(() => {
-        (async () => {
-            const plans = await getPlanList();
-            if (plans) {
-                setPlanList(plans);
-            }
-        })();
+        fetchPlanList();
     }, []);
 
     return (
@@ -79,16 +82,24 @@ function LoggedIn() {
                 open={openAdd}
                 handleClose={() => setOpenAdd(false)}
             />
-            <UserShowDialog
-                open={openUser}
-                handleClose={() => setOpenUser(false)}
+            <PlanRemoveDialog
+                open={openDelete}
+                handleClose={() => setOpenDelete(false)}
+                handleCloseShow={() => setOpenShow(false)}
+                fetchPlanList={fetchPlanList}
+                plan={plan}
             />
+
             <Calendar
                 planList={planList}
                 setPlan={(plan) => setPlan(plan)}
                 handleOpenShow={() => setOpenShow(true)}
                 handleOpenAdd={() => setOpenAdd(true)}
                 handleOpenUser={() => setOpenUser(true)}
+            />
+            <UserShowDialog
+                open={openUser}
+                handleClose={() => setOpenUser(false)}
             />
         </>
     );

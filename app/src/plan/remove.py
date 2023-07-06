@@ -15,6 +15,10 @@ def remove_plan(plan_id: str):
     """
 
     plan = Plan.query.filter(Plan.id == int(plan_id)).first()
-    cancel_notification(plan)
+    try:
+        # 通知が未設定な場合は何もしない
+        cancel_notification(plan)
+    except:
+        pass
     db.session.delete(plan)
     db.session.commit()

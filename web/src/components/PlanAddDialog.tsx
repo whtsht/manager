@@ -1,8 +1,8 @@
-// /**
-//  * Designer    : 菊地智遥
-//  * Date        : 2023/7/4
-//  * Purpose     : test
-//  */
+/**
+ * Designer    : 菊地智遥
+ * Date        : 2023/7/4
+ * Purpose     : 予定を追加する
+ */
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";

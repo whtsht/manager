@@ -1,8 +1,8 @@
-// /**
-//  * Designer    : 菊地智遥
-//  * Date        : 2023/6/
-//  * Purpose     : test
-//  */
+/**
+ * Designer    : 菊地智遥
+ * Date        : 2023/7/7
+ * Purpose     : ユーザー情報の表示
+ */
 
 import liff from "@line/liff";
 import { useState, useEffect } from "react";

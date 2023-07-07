@@ -7,7 +7,7 @@ from flask_apscheduler import APScheduler
 from datetime import datetime
 from linebot import LineBotApi
 from info import Plan, get_start_time
-from src.secret import CHANNEL_ACCESS_TOKEN
+from secret import CHANNEL_ACCESS_TOKEN
 from datetime import timedelta, datetime
 from typing import cast
 from linebot.models import (

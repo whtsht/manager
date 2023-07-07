@@ -1,7 +1,7 @@
 """
 Dedigner: 菊地智遥
 Date: 2023/6/20
-Purpose: 
+Purpose: 予定追加の関数記述
 """
 
 from typing import Optional, cast

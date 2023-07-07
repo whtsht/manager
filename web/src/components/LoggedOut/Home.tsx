@@ -1,6 +1,5 @@
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import MobilePhone from "./MobilePhone";
-import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import { LineButton, WebButton } from "./Buttons";
 
 export default function Home() {
@@ -14,9 +13,11 @@ export default function Home() {
             <Grid container direction={"row-reverse"} sx={{ padding: 2 }}>
                 <Grid item xs={12} sm={8}>
                     <p>予定管理をより手軽に！</p>
-                    <h1>Manager</h1>
+                    <h1>Guide me</h1>
                     <p>
-                        ManagerはLineを使って手軽に予定の追加，確認を行うことができます．また，Webアプリを使うと予定の詳細な設定ができます．
+                        Guide&nbsp;meはなインターフェースを提供する予定管理アプリです．
+                        このアプリはLineアプリ，Webアプリ間で予定情報を共有することができます．
+                        利用者の性格，ライフスタイルに合わせて多様な使い方ができます．
                     </p>
                     <Actions mobile={false} />
                 </Grid>

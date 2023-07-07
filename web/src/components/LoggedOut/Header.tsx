@@ -52,13 +52,13 @@ export default function Header() {
                         sx={{
                             mr: 2,
                             display: { xs: "none", md: "flex" },
-                            fontWeight: 700,
-                            letterSpacing: ".3rem",
+                            fontWeight: 600,
+                            letterSpacing: ".2rem",
                             color: "inherit",
                             textDecoration: "none",
                         }}
                     >
-                        Manager
+                        Guide me
                     </Typography>
 
                     <Box

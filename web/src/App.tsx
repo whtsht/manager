@@ -22,8 +22,7 @@ function App() {
                 <Routes>
                     <Route
                         path="/"
-                        // element={isLoggedIn() ? <LoggedIn /> : <LoggedOut />}
-                        element={<LoggedIn />}
+                        element={isLoggedIn() ? <LoggedIn /> : <LoggedOut />}
                     />
                     <Route path="/how_to_use" element={<HowToUse />} />
                 </Routes>

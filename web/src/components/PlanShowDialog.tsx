@@ -45,7 +45,6 @@ function PlanShowDialog({
     }
 
     const ad = plan.allDay !== null;
-    console.log(plan.allDay);
     return (
         <Dialog open={open} onClose={handleClose} fullWidth>
             <Stack

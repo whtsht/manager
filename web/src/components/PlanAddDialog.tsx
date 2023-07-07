@@ -7,18 +7,65 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
-import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import {
+    MobileDateTimePicker,
+    MobileDateTimePickerSlotsComponentsProps,
+} from "@mui/x-date-pickers/MobileDateTimePicker";
+import {
+    DateTimePicker,
+    DateTimePickerSlotsComponentsProps,
+} from "@mui/x-date-pickers/DateTimePicker";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import { addPlan } from "./AddPlan";
-import { Plan, PlanForm, planSchema } from "../Plan";
+import { Plan, PlanForm, planSchema, stringToDate } from "../Plan";
 import liff from "@line/liff";
 import { DialogActions, Stack } from "@mui/material";
 import { dateTostring } from "../Plan";
-import * as yup from "yup";
+import { DateOrTimeView } from "@mui/x-date-pickers";
+
+export function ResponsiveDateTimePicker({
+    label,
+    slotProps,
+    value,
+    onChange,
+}: {
+    label: string;
+    slotProps:
+        | DateTimePickerSlotsComponentsProps<Date>
+        | MobileDateTimePickerSlotsComponentsProps<Date, DateOrTimeView>
+        | undefined;
+    value: Date | null;
+    onChange: (date: Date | null) => void;
+}) {
+    return (
+        <>
+            <MobileDateTimePicker
+                label={label}
+                sx={{ display: { xs: "flex", md: "none" } }}
+                slotProps={
+                    slotProps as MobileDateTimePickerSlotsComponentsProps<
+                        Date,
+                        DateOrTimeView
+                    >
+                }
+                value={value}
+                onChange={onChange}
+            />
+            <DateTimePicker
+                label={label}
+                sx={{ display: { xs: "none", md: "flex" } }}
+                slotProps={
+                    slotProps as DateTimePickerSlotsComponentsProps<Date>
+                }
+                value={value}
+                onChange={onChange}
+            />
+        </>
+    );
+}
 
 function PlanAddDialog({
     open,
@@ -29,7 +76,7 @@ function PlanAddDialog({
     handleClose: () => void;
     fetchPlanList: () => void;
 }) {
-    const lineID = "aaa"; //liff.getContext()?.userId!;
+    const lineID = liff.getContext()?.userId!;
 
     const innerHandleClose = () => {
         handleClose();
@@ -87,7 +134,7 @@ function PlanAddDialog({
                     maxRows={3}
                     minRows={3}
                 />
-                <DateTimePicker
+                <ResponsiveDateTimePicker
                     label="通知時間"
                     slotProps={{
                         textField: {
@@ -98,6 +145,7 @@ function PlanAddDialog({
                                 formik.touched.notif && formik.errors.notif,
                         },
                     }}
+                    value={null}
                     onChange={(e: Date | null) => {
                         if (e) {
                             formik.setFieldValue("notif", dateTostring(e));
@@ -123,9 +171,8 @@ function PlanAddDialog({
                 <Box sx={{ width: "100%", height: "140px" }}>
                     {formik.values.allday ? (
                         <>
-                            <DateTimePicker
+                            <ResponsiveDateTimePicker
                                 label="開始時刻"
-                                sx={{ width: "100%" }}
                                 slotProps={{
                                     textField: {
                                         error:
@@ -136,6 +183,7 @@ function PlanAddDialog({
                                             formik.errors.start,
                                     },
                                 }}
+                                value={null}
                                 onChange={(e: Date | null) => {
                                     if (e) {
                                         formik.setFieldValue(
@@ -148,9 +196,8 @@ function PlanAddDialog({
                         </>
                     ) : (
                         <>
-                            <DateTimePicker
+                            <ResponsiveDateTimePicker
                                 label="開始時刻"
-                                sx={{ width: "100%" }}
                                 slotProps={{
                                     textField: {
                                         error:
@@ -161,6 +208,7 @@ function PlanAddDialog({
                                             formik.errors.start,
                                     },
                                 }}
+                                value={null}
                                 onChange={(e: Date | null) => {
                                     if (e) {
                                         formik.setFieldValue(
@@ -171,9 +219,8 @@ function PlanAddDialog({
                                 }}
                             />
                             <div style={{ height: "20px" }}></div>
-                            <DateTimePicker
+                            <ResponsiveDateTimePicker
                                 label="終了時刻"
-                                sx={{ width: "100%" }}
                                 slotProps={{
                                     textField: {
                                         error:
@@ -184,6 +231,7 @@ function PlanAddDialog({
                                             formik.errors.end,
                                     },
                                 }}
+                                value={null}
                                 onChange={(e: Date | null) => {
                                     if (e) {
                                         formik.setFieldValue(

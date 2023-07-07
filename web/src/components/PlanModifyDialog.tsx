@@ -9,8 +9,7 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
     Plan,
     PlanForm,
@@ -20,6 +19,7 @@ import {
 } from "../Plan";
 import { Button, DialogActions, Stack } from "@mui/material";
 import { useFormik } from "formik";
+import { ResponsiveDateTimePicker } from "./PlanAddDialog";
 
 /**
  * Appサーバーに対して，HTTPリクエストを送信する．
@@ -134,7 +134,7 @@ export default function PlanModifyDialog({
                     maxRows={3}
                     minRows={3}
                 />
-                <DateTimePicker
+                <ResponsiveDateTimePicker
                     label="通知時間"
                     value={stringToDate(formik.values.notif)}
                     slotProps={{
@@ -171,9 +171,8 @@ export default function PlanModifyDialog({
                 <Box sx={{ width: "100%", height: "140px" }}>
                     {formik.values.allday ? (
                         <>
-                            <DateTimePicker
+                            <ResponsiveDateTimePicker
                                 label="開始時刻"
-                                sx={{ width: "100%" }}
                                 value={stringToDate(formik.values.start)}
                                 slotProps={{
                                     textField: {
@@ -197,9 +196,8 @@ export default function PlanModifyDialog({
                         </>
                     ) : (
                         <>
-                            <DateTimePicker
+                            <ResponsiveDateTimePicker
                                 label="開始時刻"
-                                sx={{ width: "100%" }}
                                 value={stringToDate(formik.values.start)}
                                 slotProps={{
                                     textField: {
@@ -221,14 +219,13 @@ export default function PlanModifyDialog({
                                 }}
                             />
                             <div style={{ height: "20px" }}></div>
-                            <DateTimePicker
+                            <ResponsiveDateTimePicker
                                 label="終了時刻"
                                 value={
                                     formik.values.end
                                         ? stringToDate(formik.values.end)
                                         : null
                                 }
-                                sx={{ width: "100%" }}
                                 slotProps={{
                                     textField: {
                                         error:

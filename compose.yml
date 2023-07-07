@@ -22,7 +22,7 @@ services:
       dockerfile: ./proxy/Dockerfile
     restart: always
     ports:
-      - 8443:8443
+      - 50800:50800
     tty: true
     init: true
     networks:
@@ -36,7 +36,7 @@ services:
       dockerfile: ./web/Dockerfile
     restart: always
     ports:
-      - 443:443
+      - 22:22
       - 80:80
     tty: true
     init: true

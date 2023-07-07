@@ -11,8 +11,15 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { useEffect, useState } from "react";
-import { Plan, dateTostring, stringToDate } from "../Plan";
+import {
+    Plan,
+    PlanForm,
+    dateTostring,
+    planSchema,
+    stringToDate,
+} from "../Plan";
 import { Button, DialogActions, Stack } from "@mui/material";
+import { useFormik } from "formik";
 
 /**
  * Appサーバーに対して，HTTPリクエストを送信する．
@@ -45,7 +52,7 @@ async function modifyPlan(plan: Plan): Promise<boolean> {
  * @param plan          - 予定情報
  * @returns dialog      - ダイアログ表示のコンポーネント
  */
-function PlanModifyDialog({
+export default function PlanModifyDialog({
     open,
     handleClose,
     fetchPlanList,
@@ -56,102 +63,136 @@ function PlanModifyDialog({
     fetchPlanList: () => void;
     plan: Plan | null;
 }) {
-    const [ad, setAd] = useState(true);
-    const [title, setTitle] = useState("");
-    const [memo, setMemo] = useState("");
-    const [notifTime, setNotifTime] = useState("");
-    const [allDay, setAllDay] = useState<string | null>(null);
-    const [start, setStart] = useState<string | null>(null);
-    const [end, setEnd] = useState<string | null>(null);
     const lineID = "aaa"; //liff.getContext()?.userId!;
 
-    useEffect(() => {
-        if (ad) {
-            if (!allDay) setAllDay(start);
-            setStart(null);
-            setEnd(null);
-        } else {
-            if (!start) setStart(allDay);
-            if (!end) setEnd(allDay);
-            setAllDay(null);
-        }
-    }, [ad]);
+    const innerHandleClose = () => {
+        handleClose();
+        window.setTimeout(formik.resetForm, 500);
+    };
+
+    const formik = useFormik<PlanForm>({
+        initialValues: {
+            title: "",
+            notif: "",
+            memo: "",
+            allday: true,
+            start: "",
+            end: "",
+        },
+        validationSchema: planSchema,
+        onSubmit: async (data) => {
+            const newPlan: Plan = {
+                id: plan!.id,
+                lineID,
+                title: data.title,
+                detail: data.memo,
+                notifTime: data.notif,
+                allDay: data.allday ? data.start : null,
+                start: !data.allday ? data.start : null,
+                end: !data.allday ? data.end : null,
+            } as Plan;
+            await modifyPlan(newPlan);
+            fetchPlanList();
+            innerHandleClose();
+        },
+    });
 
     useEffect(() => {
         if (plan) {
-            setAd(plan.allDay !== null);
-            setTitle(plan.title);
-            setMemo(plan.detail);
-            setNotifTime(plan.notifTime);
-            setAllDay(plan.allDay);
-            setStart(plan.start);
-            setEnd(plan.end);
+            formik.setFieldValue("title", plan.title);
+            formik.setFieldValue("memo", plan.detail);
+            formik.setFieldValue("notif", plan.notifTime);
+            formik.setFieldValue("allday", !!plan.allDay);
+            formik.setFieldValue("start", plan.allDay || plan.start);
+            formik.setFieldValue("end", plan.end);
         }
     }, [plan]);
 
-    const handleChange = (setFunc: (value: string) => void) => {
-        return (e: Date | null) => {
-            if (e !== null) {
-                setFunc(dateTostring(e));
-            }
-        };
-    };
-
-    if (plan === null) return <></>;
-
     return (
-        <Dialog open={open} onClose={handleClose} fullWidth>
-            <Stack
-                component="form"
-                display="flex"
-                justifyContent="center"
-                gap={2}
-                padding={3}
-            >
+        <Dialog open={open} onClose={innerHandleClose} fullWidth>
+            <Stack component="form" display="flex" gap={2} padding={3}>
                 <TextField
-                    onChange={(e) => setTitle(e.target.value)}
                     id="予定名"
                     label="予定名"
                     variant="outlined"
-                    defaultValue={plan.title}
+                    value={formik.values.title}
+                    onChange={(e) =>
+                        formik.setFieldValue("title", e.target.value)
+                    }
+                    error={formik.touched.title && Boolean(formik.errors.title)}
+                    helperText={formik.touched.title && formik.errors.title}
                 />
                 <TextField
-                    onChange={(e) => setMemo(e.target.value)}
+                    value={formik.values.memo}
+                    onChange={(e) =>
+                        formik.setFieldValue("memo", e.target.value)
+                    }
                     id="メモ"
                     label="メモ"
                     variant="outlined"
                     multiline
                     maxRows={3}
                     minRows={3}
-                    defaultValue={plan.detail}
                 />
                 <DateTimePicker
                     label="通知時間"
-                    onChange={handleChange(setNotifTime)}
-                    defaultValue={stringToDate(plan.notifTime)}
+                    value={stringToDate(formik.values.notif)}
+                    slotProps={{
+                        textField: {
+                            error:
+                                formik.touched.notif &&
+                                Boolean(formik.errors.notif),
+                            helperText:
+                                formik.touched.notif && formik.errors.notif,
+                        },
+                    }}
+                    onChange={(e: Date | null) => {
+                        if (e) {
+                            formik.setFieldValue("notif", dateTostring(e));
+                        }
+                    }}
                 />
+
                 <FormControlLabel
                     control={
                         <Checkbox
-                            defaultChecked={plan.allDay !== null}
-                            onChange={(e) => setAd(e.target.checked)}
+                            checked={formik.values.allday}
+                            onChange={(e) => {
+                                formik.setFieldValue(
+                                    "allday",
+                                    e.target.checked
+                                );
+                            }}
                         />
                     }
                     label="終日"
                 />
 
                 <Box sx={{ width: "100%", height: "140px" }}>
-                    {ad ? (
+                    {formik.values.allday ? (
                         <>
                             <DateTimePicker
                                 label="開始時刻"
                                 sx={{ width: "100%" }}
-                                onChange={handleChange(setAllDay)}
-                                defaultValue={
-                                    plan.allDay
-                                        ? stringToDate(plan.allDay)
-                                        : null
-                                }
+                                value={stringToDate(formik.values.start)}
+                                slotProps={{
+                                    textField: {
+                                        error:
+                                            formik.touched.start &&
+                                            Boolean(formik.errors.start),
+                                        helperText:
+                                            formik.touched.start &&
+                                            formik.errors.start,
+                                    },
+                                }}
+                                onChange={(e: Date | null) => {
+                                    if (e) {
+                                        formik.setFieldValue(
+                                            "start",
+                                            dateTostring(e)
+                                        );
+                                    }
+                                }}
                             />
                         </>
                     ) : (
@@ -159,44 +200,70 @@ function PlanModifyDialog({
                             <DateTimePicker
                                 label="開始時刻"
                                 sx={{ width: "100%" }}
-                                onChange={handleChange(setStart)}
-                                defaultValue={
-                                    plan.start ? stringToDate(plan.start) : null
-                                }
+                                value={stringToDate(formik.values.start)}
+                                slotProps={{
+                                    textField: {
+                                        error:
+                                            formik.touched.start &&
+                                            Boolean(formik.errors.start),
+                                        helperText:
+                                            formik.touched.start &&
+                                            formik.errors.start,
+                                    },
+                                }}
+                                onChange={(e: Date | null) => {
+                                    if (e) {
+                                        formik.setFieldValue(
+                                            "start",
+                                            dateTostring(e)
+                                        );
+                                    }
+                                }}
                             />
                             <div style={{ height: "20px" }}></div>
                             <DateTimePicker
                                 label="終了時刻"
-                                sx={{ width: "100%" }}
-                                onChange={handleChange(setEnd)}
-                                defaultValue={
-                                    plan.end ? stringToDate(plan.end) : null
+                                value={
+                                    formik.values.end
+                                        ? stringToDate(formik.values.end)
+                                        : null
                                 }
+                                sx={{ width: "100%" }}
+                                slotProps={{
+                                    textField: {
+                                        error:
+                                            formik.touched.end &&
+                                            Boolean(formik.errors.end),
+                                        helperText:
+                                            formik.touched.end &&
+                                            formik.errors.end,
+                                    },
+                                }}
+                                onChange={(e: Date | null) => {
+                                    if (e) {
+                                        formik.setFieldValue(
+                                            "end",
+                                            dateTostring(e)
+                                        );
+                                    }
+                                }}
                             />
                         </>
                     )}
                 </Box>
                 <DialogActions>
-                    <Button variant="outlined" onClick={handleClose}>
+                    <Button
+                        autoFocus
+                        variant="outlined"
+                        onClick={innerHandleClose}
+                    >
                         閉じる
                     </Button>
+
                     <Button
+                        autoFocus
                         variant="outlined"
-                        onClick={async () => {
-                            const newPlan: Plan = {
-                                id: plan.id,
-                                lineID,
-                                title: title,
-                                detail: memo,
-                                notifTime: notifTime,
-                                allDay: allDay,
-                                start: start,
-                                end: end,
-                            } as Plan;
-                            await modifyPlan(newPlan);
-                            handleClose();
-                            fetchPlanList();
-                        }}
+                        onClick={() => formik.handleSubmit()}
                     >
                         保存
                     </Button>
@@ -205,5 +272,3 @@ function PlanModifyDialog({
         </Dialog>
     );
 }
-
-export default PlanModifyDialog;

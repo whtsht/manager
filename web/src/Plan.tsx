@@ -5,6 +5,29 @@
  */
 import { EventClickArg, EventInput } from "@fullcalendar/core";
 import { format } from "date-fns";
+import * as yup from "yup";
+
+interface PlanForm {
+    title: string;
+    notif: string;
+    memo: string;
+    allday: boolean;
+    start: string;
+    end: string;
+}
+
+const schema = yup.object({
+    title: yup.string().required("この項目は必須です"),
+    notif: yup.string().required("この項目は必須です"),
+    memo: yup.string().nullable(),
+    allday: yup.boolean(),
+    start: yup.string().required("この項目は必須です"),
+    end: yup.string().when("allday", {
+        is: false,
+        then: (schema) => schema.required("この項目は必須です"),
+        otherwise: (schema) => schema.nullable(),
+    }),
+});
 
 /**
  * 予定情報を表すインターフェース
@@ -95,5 +118,11 @@ function dateTostring(date: Date): string {
     return format(date, "yyyy/MM/dd hh:mm").replace(" ", "T");
 }
 
-export type { Plan };
-export { toPlan, toEventInput, stringToDate, dateTostring };
+export type { Plan, PlanForm };
+export {
+    toPlan,
+    toEventInput,
+    stringToDate,
+    dateTostring,
+    schema as planSchema,
+};

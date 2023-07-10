@@ -23,6 +23,19 @@ from plan.notify import snooze
 
 
 def main(message: str, line_id: str) -> str:
+    if message == "説明 追加":
+        return """追加する予定の開始時刻，予定名を教えてください\n
+例) 明日の16:00にレポートという予定を追加する場合\n
+追加 明日 16:00 レポート\n\n
+例) 今年の11/12の9:00に試験という予定を追加する場合\n
+追加 11/12 9:00 レポート"""
+    if message == "説明 検索":
+        return """検索する時間またはタイトルを教えてください\n
+例) 明日の予定を検索したい場合\n
+検索 明日\n\n
+例) レポートという名前の予定を検索したい場合\n
+検索 レポート"""
+
     if message == "5分 スヌーズ":
         return snooze(line_id, 5)
     if message == "10分 スヌーズ":

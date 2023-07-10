@@ -44,7 +44,11 @@ export function LineButton() {
                 style={{ width: "100px" }}
                 src="https://qr-official.line.me/gs/M_566fjjmf_GW.png"
             ></img>
-            <Button variant="contained" sx={{ mt: 2 }}>
+            <Button
+                href="https://lin.ee/bi3aIvL"
+                variant="contained"
+                sx={{ mt: 2 }}
+            >
                 Line友達追加
             </Button>
         </Box>

@@ -15,7 +15,9 @@ from info import (
     new_plan,
     get_start_time,
 )
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+
+JST = timezone(timedelta(hours=+9), "JST")
 
 
 def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
@@ -31,21 +33,18 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
     if plan_info.title is None:
         return AddError.TitleNotSet
     elif (
-        (plan_info.start_time.date.month is None
-        or plan_info.start_time.date.day is None)
-        and plan_info.start_time.time.hour is None
-    ):
+        plan_info.start_time.date.month is None or plan_info.start_time.date.day is None
+    ) and plan_info.start_time.time.hour is None:
         return AddError.DateTimeNotSet
-    elif (plan_info.start_time.time.hour is None):
+    elif plan_info.start_time.time.hour is None:
         return AddError.TimeNotSet
     elif (
-        plan_info.start_time.date.month is None
-        or plan_info.start_time.date.day is None
+        plan_info.start_time.date.month is None or plan_info.start_time.date.day is None
     ):
         return AddError.DateNotSet
     else:
         start_time = StrictDateTime(
-            int(plan_info.start_time.date.year), #type: ignore
+            int(plan_info.start_time.date.year),  # type: ignore
             int(plan_info.start_time.date.month),
             int(plan_info.start_time.date.day),
             int(plan_info.start_time.time.hour),
@@ -61,7 +60,8 @@ def from_message(line_id: str, plan_info: PlanInfo) -> Optional[AddError]:
             return AddError.AlreadyExist
         else:
             notif_time = start_time.into()
-            if (datetime.now() + timedelta(minutes=30)) < notif_time:
+            notif_time = notif_time.replace(tzinfo=JST)
+            if (datetime.now(JST) + timedelta(minutes=30)) < notif_time:
                 notif_time -= timedelta(minutes=30)
             notif_time = StrictDateTime(
                 notif_time.year,

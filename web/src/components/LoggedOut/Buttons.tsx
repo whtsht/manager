@@ -42,7 +42,7 @@ export function LineButton() {
         >
             <img
                 style={{ width: "100px" }}
-                src="https://qr-official.line.me/gs/M_566fjjmf_GW.png"
+                src="https://qr-official.line.me/gs/M_360aobyk_GW.png"
             ></img>
             <Button
                 href="https://lin.ee/bi3aIvL"

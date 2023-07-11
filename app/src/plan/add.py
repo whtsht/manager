@@ -125,10 +125,9 @@ def complited_message(plan_info: PlanInfo) -> str:
     else:
         m = plan_info.start_time.time.minute
     mes = (
-        "予定の追加が完了しました。"
+        f"予定の追加が完了しました。"
         + f"タイトルは{plan_info.title}、"
-        + f"開始時間は{plan_info.start_time.date.month}/{plan_info.start_time.date.day}"
-        + f" {plan_info.start_time.time.hour}:{m}"
+        + f"開始時間は{(cast(datetime, plan_info.start_time.into())).strftime('%Y/%m/%d - %H:%M')}"
         + "です。"
     )
 

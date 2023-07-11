@@ -9,7 +9,8 @@ tzinfo = timezone(timedelta(hours=9))
 
 
 def test_add_plan(client):
-    main("追加 2099/08/01の9:00 学校", mockLineID)
+    result = main("追加 2099/08/01の9:00 学校", mockLineID)
+    assert result == "予定の追加が完了しました。タイトルは学校、開始時間は2099/08/01 - 09:00です。"
     main("追加 2099/08/01の9:00 学校", mockLineID2)
 
     plans = Plan.query.all()
@@ -42,6 +43,8 @@ def add_test_err(client):
     main("追加 2099/08/01の9:00 学校", mockLineID)
     result = main("追加 2099/08/01の9:00 学校", mockLineID)
     assert result == "その予定は既に追加されています"
+
+
 #
 #
 def test_search_plan(client):
@@ -52,21 +55,21 @@ def test_search_plan(client):
     main("追加 2099/03/03の16:00 遊び", mockLineID2)
 
     result = main("予定検索 学校", mockLineID)
-    assert result == "予定が見つかりました。\nタイトル: 学校\n開始時刻: 2099-03-03 09:00:00"
+    assert result == "予定が見つかりました。\nタイトル: 学校\n開始時刻: 2099/03/03 - 09:00"
 
     result = main("予定検索 遊び", mockLineID)
-    assert result == "予定が見つかりました。\nタイトル: 遊び\n開始時刻: 2099-03-03 16:00:00"
+    assert result == "予定が見つかりました。\nタイトル: 遊び\n開始時刻: 2099/03/03 - 16:00"
 
     result = main("予定検索 学校 2099/03/03", mockLineID)
-    assert result == "予定が見つかりました。\nタイトル: 学校\n開始時刻: 2099-03-03 09:00:00"
+    assert result == "予定が見つかりました。\nタイトル: 学校\n開始時刻: 2099/03/03 - 09:00"
 
     result = main("予定検索 遊び 2099/03/03", mockLineID)
-    assert result == "予定が見つかりました。\nタイトル: 遊び\n開始時刻: 2099-03-03 16:00:00"
+    assert result == "予定が見つかりました。\nタイトル: 遊び\n開始時刻: 2099/03/03 - 16:00"
 
     result = main("予定検索 2099/03/03", mockLineID)
     assert (
         result
-        == "予定が見つかりました。\nタイトル: 学校\n開始時刻: 2099-03-03 09:00:00\n\nタイトル: 遊び\n開始時刻: 2099-03-03 16:00:00"
+        == "予定が見つかりました。\nタイトル: 学校\n開始時刻: 2099/03/03 - 09:00\n\nタイトル: 遊び\n開始時刻: 2099/03/03 - 16:00"
     )
 
     result = main("予定検索 遊び 2099/03/04", mockLineID)

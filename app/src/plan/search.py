@@ -4,6 +4,8 @@ Date:       2023/06/26
 Purpose:    予定検索
 """
 
+from datetime import datetime
+from typing import cast
 from info import PlanInfo, Plan, SearchError, get_start_time
 
 
@@ -95,10 +97,18 @@ def completed_message(plan_list: list[Plan]) -> str:
 
     for i in range(len(plan_list) - 1):
         mes += "タイトル: " + plan_list[i].title + "\n"
-        mes += "開始時刻: " + str(plan_list[i].start_time or plan_list[i].allday) + "\n\n"
+        mes += (
+            "開始時刻: "
+            + (cast(datetime, plan_list[i].start_time or plan_list[i].allday)).strftime(
+                "%Y/%m/%d - %H:%M"
+            )
+            + "\n\n"
+        )
 
     last = len(plan_list) - 1
     mes += "タイトル: " + plan_list[last].title + "\n"
-    mes += "開始時刻: " + str(plan_list[last].start_time or plan_list[last].allday)
+    mes += "開始時刻: " + (
+        cast(datetime, plan_list[last].start_time or plan_list[last].allday)
+    ).strftime("%Y/%m/%d - %H:%M")
 
     return mes

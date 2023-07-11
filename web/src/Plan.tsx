@@ -115,7 +115,7 @@ function stringToDate(str: string): Date {
 }
 
 function dateTostring(date: Date): string {
-    return format(date, "yyyy/MM/dd hh:mm").replace(" ", "T");
+    return format(date, "yyyy/MM/dd HH:mm").replace(" ", "T");
 }
 
 export type { Plan, PlanForm };

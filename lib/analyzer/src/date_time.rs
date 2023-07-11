@@ -138,7 +138,11 @@ pub fn get_date_time(input: &str) -> DateTime {
         }
 
         let mut chars = word.chars();
-        chars.next();
+        while let Some(c) = chars.next() {
+            if c == ':' || c == '：' || c == '/' || c == '／' || c == ' ' || c == '　' {
+                break;
+            }
+        }
         word = chars.as_str();
     }
 }

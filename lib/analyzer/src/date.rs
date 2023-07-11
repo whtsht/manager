@@ -105,6 +105,7 @@ fn current_year() -> u16 {
 ///
 /// 残りの文字列と解析した日付情報を返す
 pub fn date_parser(input: &str) -> IResult<&str, Date> {
+    use chrono::{Datelike, NaiveDate};
     alt((
         // 今日
         map(tag("今日"), |_| get_day(0)),
@@ -116,22 +117,64 @@ pub fn date_parser(input: &str) -> IResult<&str, Date> {
         map(tag("明々後日"), |_| get_day(3)),
         // <year><slash><month><slash><day>
         map(
-            tuple((year, slash, month, slash, day)),
-            |(year, _, month, _, day)| Date::new(Some(year), Some(month), Some(day)),
+            map_opt(
+                tuple((year, slash, month, slash, day)),
+                |(year, _, month, _, day)| {
+                    NaiveDate::from_ymd_opt(year as i32, month as u32, day as u32)
+                },
+            ),
+            |date| {
+                Date::new(
+                    Some(date.year() as u16),
+                    Some(date.month() as u8),
+                    Some(date.day() as u8),
+                )
+            },
         ),
         // <month><slash><day>
-        map(tuple((month, slash, day)), |(month, _, day)| {
-            Date::new(Some(current_year()), Some(month), Some(day))
-        }),
+        map(
+            map_opt(tuple((month, slash, day)), |(month, _, day)| {
+                NaiveDate::from_ymd_opt(current_year() as i32, month as u32, day as u32)
+            }),
+            |date| {
+                Date::new(
+                    Some(date.year() as u16),
+                    Some(date.month() as u8),
+                    Some(date.day() as u8),
+                )
+            },
+        ),
         // <month>月<day>日
         map(
-            tuple((month, char('月'), day, char('日'))),
-            |(month, _, day, _)| Date::new(Some(current_year()), Some(month), Some(day)),
+            map_opt(
+                tuple((month, char('月'), day, char('日'))),
+                |(month, _, day, _)| {
+                    NaiveDate::from_ymd_opt(current_year() as i32, month as u32, day as u32)
+                },
+            ),
+            |date| {
+                Date::new(
+                    Some(date.year() as u16),
+                    Some(date.month() as u8),
+                    Some(date.day() as u8),
+                )
+            },
         ),
         // <year>年<month>月<day>日
         map(
-            tuple((year, char('年'), month, char('月'), day, char('日'))),
-            |(year, _, month, _, day, _)| Date::new(Some(year), Some(month), Some(day)),
+            map_opt(
+                tuple((year, char('年'), month, char('月'), day, char('日'))),
+                |(year, _, month, _, day, _)| {
+                    NaiveDate::from_ymd_opt(year as i32, month as u32, day as u32)
+                },
+            ),
+            |date| {
+                Date::new(
+                    Some(date.year() as u16),
+                    Some(date.month() as u8),
+                    Some(date.day() as u8),
+                )
+            },
         ),
     ))(input)
 }

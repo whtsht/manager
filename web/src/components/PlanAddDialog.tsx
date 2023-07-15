@@ -19,13 +19,13 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
-import { addPlan } from "./AddPlan";
-import { Plan, PlanForm, planSchema } from "../Plan";
+import { Plan, PlanForm, planSchema, stringToDate } from "../Plan";
 import liff from "@line/liff";
 import { DialogActions, Stack } from "@mui/material";
 import { dateTostring } from "../Plan";
 import { DateOrTimeView } from "@mui/x-date-pickers";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 export function ResponsiveDateTimePicker({
     label,
@@ -68,6 +68,37 @@ export function ResponsiveDateTimePicker({
     );
 }
 
+/**
+ * Appサーバーに対して，HTTPリクエストを送信する．
+ *
+ * @param lineID   - ユーザーのLineID
+ * @param plan     - 予定の情報
+ * @returns
+ */
+
+async function addPlan(lineID: string, plan: Plan): Promise<boolean> {
+    try {
+        const response = await fetch("/web/add_plan/", {
+            method: "POST",
+            headers: {
+                "content-type": "application/json;charset=UTF-8",
+            },
+            body: JSON.stringify({
+                lineID: lineID,
+                plan: plan,
+            }),
+        });
+
+        if (!response.ok || response.status != 200) {
+            return false;
+        }
+
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 function PlanAddDialog({
     open,
     handleClose,
@@ -86,19 +117,18 @@ function PlanAddDialog({
         window.setTimeout(formik.resetForm, 500);
     };
 
-    console.log(date);
     const formik = useFormik<PlanForm>({
+        enableReinitialize: true,
         initialValues: {
             title: "",
-            notif: date ? dateTostring(date) : "",
+            notif: "",
             memo: "",
             allday: true,
-            start: date ? dateTostring(date) : "",
-            end: date ? dateTostring(date) : "",
+            start: "",
+            end: "",
         },
         validationSchema: planSchema,
         onSubmit: async (data) => {
-            formik.resetForm();
             const plan: Plan = {
                 lineID,
                 title: data.title,
@@ -110,6 +140,7 @@ function PlanAddDialog({
             } as Plan;
             await addPlan(lineID, plan);
             handleClose();
+            formik.resetForm();
             fetchPlanList();
             toast.success("予定を追加しました", {
                 position: "bottom-right",
@@ -123,6 +154,13 @@ function PlanAddDialog({
             });
         },
     });
+    useEffect(() => {
+        if (date) {
+            formik.setFieldValue("notif", dateTostring(date));
+            formik.setFieldValue("start", dateTostring(date));
+            formik.setFieldValue("end", dateTostring(date));
+        }
+    }, [date]);
 
     return (
         <Dialog open={open} onClose={innerHandleClose} fullWidth>
@@ -159,7 +197,11 @@ function PlanAddDialog({
                                 formik.touched.notif && formik.errors.notif,
                         },
                     }}
-                    value={date}
+                    value={
+                        formik.values.notif === ""
+                            ? null
+                            : stringToDate(formik.values.notif)
+                    }
                     onChange={(e: Date | null) => {
                         if (e) {
                             formik.setFieldValue("notif", dateTostring(e));
@@ -197,7 +239,11 @@ function PlanAddDialog({
                                             formik.errors.start,
                                     },
                                 }}
-                                value={date}
+                                value={
+                                    formik.values.notif === ""
+                                        ? null
+                                        : stringToDate(formik.values.start)
+                                }
                                 onChange={(e: Date | null) => {
                                     if (e) {
                                         formik.setFieldValue(
@@ -222,7 +268,11 @@ function PlanAddDialog({
                                             formik.errors.start,
                                     },
                                 }}
-                                value={null}
+                                value={
+                                    formik.values.notif === ""
+                                        ? null
+                                        : stringToDate(formik.values.start)
+                                }
                                 onChange={(e: Date | null) => {
                                     if (e) {
                                         formik.setFieldValue(
@@ -245,7 +295,11 @@ function PlanAddDialog({
                                             formik.errors.end,
                                     },
                                 }}
-                                value={date}
+                                value={
+                                    formik.values.notif === ""
+                                        ? null
+                                        : stringToDate(formik.values.end)
+                                }
                                 onChange={(e: Date | null) => {
                                     if (e) {
                                         formik.setFieldValue(

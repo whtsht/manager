@@ -20,7 +20,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import { addPlan } from "./AddPlan";
-import { Plan, PlanForm, planSchema, stringToDate } from "../Plan";
+import { Plan, PlanForm, planSchema } from "../Plan";
 import liff from "@line/liff";
 import { DialogActions, Stack } from "@mui/material";
 import { dateTostring } from "../Plan";
@@ -89,11 +89,11 @@ function PlanAddDialog({
     const formik = useFormik<PlanForm>({
         initialValues: {
             title: "",
-            notif: "",
+            notif: dateTostring(date),
             memo: "",
             allday: true,
-            start: "",
-            end: "",
+            start: dateTostring(date),
+            end: dateTostring(date),
         },
         validationSchema: planSchema,
         onSubmit: async (data) => {

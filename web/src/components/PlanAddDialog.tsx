@@ -72,13 +72,14 @@ function PlanAddDialog({
     open,
     handleClose,
     fetchPlanList,
+    date,
 }: {
     open: boolean;
     handleClose: () => void;
     fetchPlanList: () => void;
+    date: Date;
 }) {
-    //const lineID = liff.getContext()?.userId!;
-    const lineID = "a";
+    const lineID = liff.getContext()?.userId!;
 
     const innerHandleClose = () => {
         handleClose();
@@ -157,7 +158,7 @@ function PlanAddDialog({
                                 formik.touched.notif && formik.errors.notif,
                         },
                     }}
-                    value={null}
+                    value={date}
                     onChange={(e: Date | null) => {
                         if (e) {
                             formik.setFieldValue("notif", dateTostring(e));
@@ -195,7 +196,7 @@ function PlanAddDialog({
                                             formik.errors.start,
                                     },
                                 }}
-                                value={null}
+                                value={date}
                                 onChange={(e: Date | null) => {
                                     if (e) {
                                         formik.setFieldValue(
@@ -243,7 +244,7 @@ function PlanAddDialog({
                                             formik.errors.end,
                                     },
                                 }}
-                                value={null}
+                                value={date}
                                 onChange={(e: Date | null) => {
                                     if (e) {
                                         formik.setFieldValue(

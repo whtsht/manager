@@ -19,6 +19,7 @@ import { useEffect } from "react";
  * @param handleOpenShow    - 予定表示画面を表示する関数
  * @param handleOpenAdd     - 予定追加画面を表示する関数
  * @param handleOpenUser    - 利用者画面を表示する関数
+ * @param handleSetDate     - 日付をセットする関数
  * @returns
  */
 function Calendar({
@@ -27,12 +28,14 @@ function Calendar({
     handleOpenShow,
     handleOpenAdd,
     handleOpenUser,
+    handleSetDate,
 }: {
     planList: Plan[];
     setPlan: (plan: Plan) => void;
     handleOpenShow: () => void;
     handleOpenAdd: () => void;
     handleOpenUser: () => void;
+    handleSetDate: (date: Date) => void;
 }) {
     useEffect(() => {
         const setIcon = (name: string, icon: string) => {
@@ -91,7 +94,10 @@ function Calendar({
                 list: " ",
                 month: " ",
             }}
-            dateClick={handleOpenAdd}
+            dateClick={(arg) => {
+                handleSetDate(arg.date);
+                handleOpenAdd();
+            }}
         />
     );
 }

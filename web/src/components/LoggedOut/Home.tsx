@@ -29,7 +29,7 @@ export default function Home() {
                     display="flex"
                     justifyContent="center"
                 >
-                    <MobilePhone />
+                    <MobilePhone src="/screenshot-home.png" />
                 </Grid>
                 <Grid item xs={12} sm={6} display={{ sx: "flex", sm: "none" }}>
                     <Actions mobile />

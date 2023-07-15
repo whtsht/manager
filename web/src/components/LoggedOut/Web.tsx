@@ -32,7 +32,7 @@ export default function Web() {
                     display="flex"
                     justifyContent="center"
                 >
-                    <MobilePhone />
+                    <MobilePhone src="/screenshot-web.png" />
                 </Grid>
             </Grid>
         </Box>

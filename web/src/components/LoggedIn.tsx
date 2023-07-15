@@ -22,8 +22,7 @@ import { ToastContainer } from "react-toastify";
  * @returns 予定情報のリスト
  */
 async function getPlanList(): Promise<[Plan] | null> {
-    //const lineID = liff.getContext()?.userId;
-    const lineID = "a";
+    const lineID = liff.getContext()?.userId;
     if (lineID === undefined) return null;
     try {
         const response = await fetch("/web/get_plan_list/", {
@@ -60,6 +59,9 @@ function LoggedIn() {
     const [openDelete, setOpenDelete] = useState(false);
     const [openModify, setOpenModify] = useState(false);
     const [openUser, setOpenUser] = useState(false);
+    const [date, setDate] = useState<Date | null>(null);
+
+    const handleSetDate = (date: Date) => setDate(date);
 
     const fetchPlanList = async () => {
         const plans = await getPlanList();
@@ -85,6 +87,7 @@ function LoggedIn() {
                 open={openAdd}
                 handleClose={() => setOpenAdd(false)}
                 fetchPlanList={fetchPlanList}
+                date={date!}
             />
             <PlanModifyDialog
                 open={openModify}
@@ -106,6 +109,7 @@ function LoggedIn() {
                 handleOpenShow={() => setOpenShow(true)}
                 handleOpenAdd={() => setOpenAdd(true)}
                 handleOpenUser={() => setOpenUser(true)}
+                handleSetDate={handleSetDate}
             />
             <UserShowDialog
                 open={openUser}

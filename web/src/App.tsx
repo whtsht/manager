@@ -21,17 +21,15 @@ function App() {
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<LoggedIn />} />
+                    <Route
+                        path="/"
+                        element={isLoggedIn() ? <LoggedIn /> : <LoggedOut />}
+                    />
                     <Route path="/how_to_use" element={<HowToUse />} />
                 </Routes>
             </BrowserRouter>
         </LocalizationProvider>
     );
 }
-
-// <Route
-//                 path="/"
-//                 element={isLoggedIn() ? <LoggedIn /> : <LoggedOut />}
-//             />
 
 export default App;

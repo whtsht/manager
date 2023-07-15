@@ -31,7 +31,7 @@ export default function Line() {
                     display="flex"
                     justifyContent="center"
                 >
-                    <MobilePhone />
+                    <MobilePhone src="/screenshot-line.png" />
                 </Grid>
             </Grid>
         </Box>

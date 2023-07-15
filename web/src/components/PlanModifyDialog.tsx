@@ -21,6 +21,7 @@ import { Button, DialogActions, Stack } from "@mui/material";
 import { useFormik } from "formik";
 import { ResponsiveDateTimePicker } from "./PlanAddDialog";
 import { toast } from "react-toastify";
+import liff from "@line/liff";
 
 /**
  * Appサーバーに対して，HTTPリクエストを送信する．
@@ -64,7 +65,7 @@ export default function PlanModifyDialog({
     fetchPlanList: () => void;
     plan: Plan | null;
 }) {
-    const lineID = "a"; //liff.getContext()?.userId!;
+    const lineID = liff.getContext()?.userId!;
 
     const innerHandleClose = () => {
         handleClose();

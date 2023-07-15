@@ -120,10 +120,6 @@ def complited_message(plan_info: PlanInfo) -> str:
     Returns:
         mes (str): 完了メッセージ
     """
-    if plan_info.start_time.time.minute == 0:
-        m = "00"
-    else:
-        m = plan_info.start_time.time.minute
     mes = (
         f"予定の追加が完了しました。"
         + f"タイトルは{plan_info.title}、"

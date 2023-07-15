@@ -146,7 +146,7 @@ class Plan(db.Model):
 
 
 def get_start_time(plan: Plan) -> datetime:
-    return plan.allday or plan.start_time  # type: ignore
+    return plan.start_time or plan.allday  # type: ignore
 
 
 class OP(Enum):

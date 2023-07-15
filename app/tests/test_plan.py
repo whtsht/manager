@@ -39,14 +39,15 @@ def test_add_plan(client):
     )
 
 
-def add_test_err(client):
+def test_add_err(client):
     main("追加 2099/08/01の9:00 学校", mockLineID)
     result = main("追加 2099/08/01の9:00 学校", mockLineID)
     assert result == "その予定は既に追加されています"
 
+    result = main("追加 2099/02/30の9:00 学校", mockLineID)
+    assert result == "開始日時が設定されていません"
 
-#
-#
+
 def test_search_plan(client):
     main("追加 2099/03/03 9:00 学校", mockLineID)
     main("追加 2099/03/03 16:00 遊び", mockLineID)

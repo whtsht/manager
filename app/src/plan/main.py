@@ -68,6 +68,10 @@ def main(message: str, line_id: str) -> str:
                 error = "AlreadyExist"
             elif result == AddError.TimeNotSet:
                 error = "TimeNotSet"
+            elif result == AddError.DateNotSet:
+                error = "DateNotSet"
+            elif result == AddError.DateTimeNotSet:
+                error = "DateTimeNotSet"
             else:
                 error = "TitleNotSet"
             state = UserState(
@@ -212,14 +216,16 @@ def gen_message(lineID: str) -> str:
             DateTime(Date(st.year, st.month, st.day), Time(st.hour, st.minute)),
         )
         message = add.complited_message(plan_info)
-        db.session.delete(st)
-        db.session.commit()
 
     elif st.op == "Add" and st.completed is False:
         if st.add_error == "AlreadyExist":
             message = add.uncompleted_message(AddError.AlreadyExist)
         elif st.add_error == "TimeNotSet":
             message = add.uncompleted_message(AddError.TimeNotSet)
+        elif st.add_error == "DateNotSet":
+            message = add.uncompleted_message(AddError.DateNotSet)
+        elif st.add_error == "DateTimeNotSet":
+            message = add.uncompleted_message(AddError.DateTimeNotSet)
         else:
             message = add.uncompleted_message(AddError.TitleNotSet)
 
@@ -230,14 +236,15 @@ def gen_message(lineID: str) -> str:
             map(lambda id: Plan.query.filter(Plan.id == id).first(), plan_id_list)
         )
         message = search.completed_message(plan_list)
-        db.session.delete(st)
-        PlanList.query.filter(PlanList.line_id == lineID).delete()
-        db.session.commit()
 
     elif st.op == "Search" and st.completed is False:
         if st.search_error == "NotFound":
             message = search.uncompleted_message(SearchError.NotFound)
         else:
             message = search.uncompleted_message(SearchError.LackInfo)
+
+    db.session.delete(st)
+    PlanList.query.filter(PlanList.line_id == lineID).delete()
+    db.session.commit()
 
     return message

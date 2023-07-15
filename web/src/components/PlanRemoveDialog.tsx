@@ -18,6 +18,7 @@ import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
+import { toast } from "react-toastify";
 
 async function removePlan(planID: string): Promise<boolean> {
     try {
@@ -69,6 +70,16 @@ function PlanRemoveDialog({
                         handleClose();
                         handleCloseShow();
                         fetchPlanList();
+                        toast.success("予定を削除しました", {
+                            position: "bottom-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: false,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
                     }}
                 >
                     はい

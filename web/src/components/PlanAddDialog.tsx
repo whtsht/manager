@@ -25,6 +25,7 @@ import liff from "@line/liff";
 import { DialogActions, Stack } from "@mui/material";
 import { dateTostring } from "../Plan";
 import { DateOrTimeView } from "@mui/x-date-pickers";
+import { toast } from "react-toastify";
 
 export function ResponsiveDateTimePicker({
     label,
@@ -76,7 +77,8 @@ function PlanAddDialog({
     handleClose: () => void;
     fetchPlanList: () => void;
 }) {
-    const lineID = liff.getContext()?.userId!;
+    //const lineID = liff.getContext()?.userId!;
+    const lineID = "a";
 
     const innerHandleClose = () => {
         handleClose();
@@ -107,6 +109,16 @@ function PlanAddDialog({
             await addPlan(lineID, plan);
             handleClose();
             fetchPlanList();
+            toast.success("予定を追加しました", {
+                position: "bottom-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         },
     });
 

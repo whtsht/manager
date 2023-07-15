@@ -20,6 +20,7 @@ import {
 import { Button, DialogActions, Stack } from "@mui/material";
 import { useFormik } from "formik";
 import { ResponsiveDateTimePicker } from "./PlanAddDialog";
+import { toast } from "react-toastify";
 
 /**
  * Appサーバーに対して，HTTPリクエストを送信する．
@@ -63,7 +64,7 @@ export default function PlanModifyDialog({
     fetchPlanList: () => void;
     plan: Plan | null;
 }) {
-    const lineID = "aaa"; //liff.getContext()?.userId!;
+    const lineID = "a"; //liff.getContext()?.userId!;
 
     const innerHandleClose = () => {
         handleClose();
@@ -94,6 +95,16 @@ export default function PlanModifyDialog({
             await modifyPlan(newPlan);
             fetchPlanList();
             innerHandleClose();
+            toast.success("予定を修正しました", {
+                position: "bottom-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         },
     });
 

@@ -13,6 +13,7 @@ import { Plan } from "../Plan";
 import PlanAddDialog from "./PlanAddDialog";
 import PlanRemoveDialog from "./PlanRemoveDialog";
 import PlanModifyDialog from "./PlanModifyDialog";
+import { ToastContainer } from "react-toastify";
 
 /**
  * Appサーバーに対してGETリクエストを送信し，予定情報のリストを取得する．
@@ -21,7 +22,8 @@ import PlanModifyDialog from "./PlanModifyDialog";
  * @returns 予定情報のリスト
  */
 async function getPlanList(): Promise<[Plan] | null> {
-    const lineID = liff.getContext()?.userId;
+    //const lineID = liff.getContext()?.userId;
+    const lineID = "a";
     if (lineID === undefined) return null;
     try {
         const response = await fetch("/web/get_plan_list/", {
@@ -108,6 +110,18 @@ function LoggedIn() {
             <UserShowDialog
                 open={openUser}
                 handleClose={() => setOpenUser(false)}
+            />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover={false}
+                theme="light"
             />
         </>
     );

@@ -107,7 +107,7 @@ def snooze(line_id: str, after: int) -> str:
     if len(plans) == 0:
         return "該当する予定が見つかりません。"
     else:
-        plan: Plan = min(plans, key=lambda x: abs(x - now))
+        plan: Plan = min(plans, key=lambda plan: abs(plan.notif_time - now))
 
         ids = list(map(lambda job: job.id, sched.get_jobs()))
         start_time = cast(datetime, plan.start_time or plan.allday)

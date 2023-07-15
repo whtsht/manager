@@ -7,6 +7,7 @@ from flask_apscheduler import APScheduler
 from datetime import datetime
 from linebot import LineBotApi
 from info import Plan, get_start_time
+from sqlalchemy import func, desc
 from secret import CHANNEL_ACCESS_TOKEN
 from datetime import timedelta, datetime
 from typing import cast
@@ -106,9 +107,7 @@ def snooze(line_id: str, after: int) -> str:
     if len(plans) == 0:
         return "該当する予定が見つかりません。"
     else:
-        # TODO
-        # 現在時刻に最も近い予定を取得する
-        plan: Plan = plans[0]
+        plan: Plan = min(plans, key=lambda x: abs(x - now))
 
         ids = list(map(lambda job: job.id, sched.get_jobs()))
         start_time = cast(datetime, plan.start_time or plan.allday)

@@ -77,7 +77,7 @@ function PlanAddDialog({
     open: boolean;
     handleClose: () => void;
     fetchPlanList: () => void;
-    date: Date;
+    date: Date | null;
 }) {
     const lineID = liff.getContext()?.userId!;
 
@@ -86,14 +86,15 @@ function PlanAddDialog({
         window.setTimeout(formik.resetForm, 500);
     };
 
+    console.log(date);
     const formik = useFormik<PlanForm>({
         initialValues: {
             title: "",
-            notif: dateTostring(date),
+            notif: date ? dateTostring(date) : "",
             memo: "",
             allday: true,
-            start: dateTostring(date),
-            end: dateTostring(date),
+            start: date ? dateTostring(date) : "",
+            end: date ? dateTostring(date) : "",
         },
         validationSchema: planSchema,
         onSubmit: async (data) => {

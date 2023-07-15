@@ -87,7 +87,7 @@ function LoggedIn() {
                 open={openAdd}
                 handleClose={() => setOpenAdd(false)}
                 fetchPlanList={fetchPlanList}
-                date={date!}
+                date={date}
             />
             <PlanModifyDialog
                 open={openModify}

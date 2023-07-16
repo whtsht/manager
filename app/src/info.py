@@ -146,7 +146,7 @@ class Plan(db.Model):
 
 
 def get_start_time(plan: Plan) -> datetime:
-    return plan.start_time or plan.allday  # type: ignore
+    return plan.allday or plan.start_time  # type: ignore
 
 
 class OP(Enum):
@@ -314,7 +314,7 @@ def new_plan(
     Returns:
         Plan: 予定情報
     """
-    return new_plan_detail(title, line_id, None, notif_time, None, start_time, None)
+    return new_plan_detail(title, line_id, None, notif_time, start_time, None, None)
 
 
 def new_plan_detail(

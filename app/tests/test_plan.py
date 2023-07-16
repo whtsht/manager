@@ -47,6 +47,9 @@ def test_add_err(client):
     result = main("追加 2099/02/30の9:00 学校", mockLineID)
     assert result == "開始日時が設定されていません"
 
+    result = main("追加 2099/02/14の25:10 学校", mockLineID)
+    assert result == "開始時刻が設定されていません"
+
 
 def test_search_plan(client):
     main("追加 2099/03/03 9:00 学校", mockLineID)

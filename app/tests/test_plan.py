@@ -80,6 +80,6 @@ def test_search_plan(client):
     assert result == "予定を見つけることができませんでした。"
 
 
-# def test_search_err(client):
-#     result = main("検索", mockLineID)
-#     assert result == "予定のタイトル、日付のどちらかを入力して下さい。"
+def test_search_err(client):
+    result = main("検索", mockLineID)
+    assert result == "予定のタイトル、日付のどちらかを入力して下さい。"

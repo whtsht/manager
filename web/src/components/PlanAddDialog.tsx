@@ -69,13 +69,12 @@ export function ResponsiveDateTimePicker({
 }
 
 /**
- * Appサーバーに対して，HTTPリクエストを送信する．
+ * Appサーバーに対して，予定を追加するHTTPリクエストを送信する
  *
  * @param lineID   - ユーザーのLineID
  * @param plan     - 予定の情報
  * @returns
  */
-
 async function addPlan(lineID: string, plan: Plan): Promise<boolean> {
     try {
         const response = await fetch("/web/add_plan/", {
@@ -99,6 +98,14 @@ async function addPlan(lineID: string, plan: Plan): Promise<boolean> {
     }
 }
 
+/**
+ * M8 予定追加処理
+ * @param open             - 表示フラグ
+ * @param handleClose      - 閉じ関数
+ * @param fetchPlayList    - 予定リスト更新関数
+ * @param date             - 今日の日付
+ * @returns
+ */
 function PlanAddDialog({
     open,
     handleClose,

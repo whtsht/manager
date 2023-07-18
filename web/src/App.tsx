@@ -16,6 +16,10 @@ function isLoggedIn(): boolean {
     }
 }
 
+/**
+ * M5 画面管理
+ * LineログインAPIを使用して，利用者のログイン状態を取得し，その結果に応じてカレンダー表示または未ログイン画面を表示させる．
+ */
 function App() {
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>

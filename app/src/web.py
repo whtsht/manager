@@ -24,9 +24,7 @@ def hello():
 @web.route("/get_plan_list/", methods=["POST"])
 def get_plan_list():
     """M34 予定リスト取得処理
-
-    Returns:
-        Plan[]: 予定情報のリスト
+    M1からの要求を受け，予定のリストを返す．データベースから予定を取得しlineIDでフィルタリングし，残った予定リストを戻り値とする．予定が見つからなかったら空のリストを返す．
     """
     if data := request.json:
         line_id = data["lineID"]
@@ -88,7 +86,9 @@ def plan_list_stringify(plans: list[Plan]) -> str:
 
 @web.route("/add_plan/", methods=["POST"])
 def add_plan():
-    """M35 予定追加処理"""
+    """M35 予定追加処理
+    M2からの要求を受け，予定を追加する．データベースにplanを追加する．主キーの予定IDは自動的にインクリメントされる．M21を呼び出し，通知の設定も行う．
+    """
     if data := request.json:
         new_plan = from_json(data["plan"])
         add.add_plan(new_plan)
@@ -98,7 +98,9 @@ def add_plan():
 
 @web.route("/modify_plan/", methods=["POST"])
 def modify_plan():
-    """M36 予定修正処理"""
+    """M36 予定修正処理
+    M3の要求を受け，予定を修正する．データベースからPlanのidと一致する予定を見つけ，それを更新する．
+    """
     if data := request.json:
         plan = from_json(data["plan"])
         modify.modify_plan(plan)
@@ -107,7 +109,9 @@ def modify_plan():
 
 @web.route("/remove_plan/", methods=["POST"])
 def remove_plan():
-    """M37 予定削除処理"""
+    """M37 予定削除処理
+    M4の要求を受け，予定を削除する．データベースからplanIDの予定IDを持つ予定を削除する．M22を呼び出し，通知の削除も行う．
+    """
     if data := request.json:
         plan_id = data["planID"]
         remove.remove_plan(plan_id)

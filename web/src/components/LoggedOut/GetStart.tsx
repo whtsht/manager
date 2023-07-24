@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { HowToUseButton, LineButton, WebButton } from "./Buttons";
+import { LineButton, WebButton } from "./Buttons";
 
 export default function GetStart() {
     return (
@@ -12,7 +12,6 @@ export default function GetStart() {
         >
             <h2>初めてみましょう :)</h2>
             <Actions />
-            <HowToUseButton />
         </Box>
     );
 }

@@ -111,17 +111,6 @@ export default function Header() {
                                     </Link>
                                 </MenuItem>
                             ))}
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Link
-                                    href="/how_to_use"
-                                    style={{
-                                        textDecoration: "none",
-                                        color: "#000000",
-                                    }}
-                                >
-                                    使い方
-                                </Link>
-                            </MenuItem>
                         </Menu>
                     </Box>
                     <Icon mobile={true} />
@@ -161,12 +150,6 @@ export default function Header() {
                                 {page}
                             </Button>
                         ))}
-                        <Button
-                            href="/how_to_use"
-                            sx={{ my: 2, color: "white", display: "block" }}
-                        >
-                            使い方
-                        </Button>
                     </Box>
                 </Toolbar>
             </Container>

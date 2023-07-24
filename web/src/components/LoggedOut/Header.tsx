@@ -111,17 +111,6 @@ export default function Header() {
                                     </Link>
                                 </MenuItem>
                             ))}
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Link
-                                    href="/how_to_use"
-                                    style={{
-                                        textDecoration: "none",
-                                        color: "#000000",
-                                    }}
-                                >
-                                    使い方
-                                </Link>
-                            </MenuItem>
                         </Menu>
                     </Box>
                     <Icon mobile={true} />
